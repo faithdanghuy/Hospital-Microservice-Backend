@@ -1,0 +1,45 @@
+package handler
+
+import (
+	"net/http"
+	"time"
+
+	"github.com/Hospital-Microservice/hospital-core/security"
+	"github.com/Hospital-Microservice/hospital-core/transport/http/response"
+	"github.com/Hospital-Microservice/user-service/mapper"
+	"github.com/Hospital-Microservice/user-service/model/req"
+	"github.com/go-playground/validator/v10"
+	"github.com/labstack/echo/v4"
+)
+
+func (u *userHandlerImpl) HandleLogin(c echo.Context) error {
+	var user req.UserLoginReq
+	err := c.Bind(&user)
+	if err != nil {
+		return response.Error(c, http.StatusBadRequest, err.Error())
+	}
+
+	var validate = validator.New(validator.WithRequiredStructEnabled())
+	if err := validate.Struct(&user); err != nil {
+		return response.Errors(c, http.StatusBadRequest, err)
+	}
+
+	userEntity, err := u.loginUseCase.Execute(c.Request().Context(), user.Phone, user.Password)
+	if err != nil {
+		return response.Error(c, http.StatusBadRequest, err.Error())
+	}
+
+	accessToken, err := security.GenToken(*userEntity.ID, time.Hour*24)
+	if err != nil {
+		return err
+	}
+	loginRes := mapper.TransformUserEntityToRes(userEntity)
+	loginRes.ID = *userEntity.ID
+	loginRes.AccessToken = *accessToken
+
+	return response.OK(
+		c, http.StatusOK,
+		"OK",
+		loginRes,
+	)
+}
