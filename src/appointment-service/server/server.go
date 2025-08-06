@@ -1,19 +1,19 @@
 package server
 
 import (
+	"github.com/Hospital-Microservice/appointment-service/handler"
+	"github.com/Hospital-Microservice/appointment-service/migration"
+	"github.com/Hospital-Microservice/appointment-service/model"
+	"github.com/Hospital-Microservice/appointment-service/provider"
+	"github.com/Hospital-Microservice/appointment-service/repository"
+	"github.com/Hospital-Microservice/appointment-service/usecase"
 	"github.com/Hospital-Microservice/hospital-core/config"
 	. "github.com/Hospital-Microservice/hospital-core/transport/http"
 	"github.com/Hospital-Microservice/hospital-core/transport/http/engine"
 	"github.com/Hospital-Microservice/hospital-core/transport/http/route"
-	"github.com/Hospital-Microservice/prescription-service/handler"
-	"github.com/Hospital-Microservice/prescription-service/migration"
-	"github.com/Hospital-Microservice/prescription-service/model"
-	"github.com/Hospital-Microservice/prescription-service/provider"
-	"github.com/Hospital-Microservice/prescription-service/repository"
-	"github.com/Hospital-Microservice/prescription-service/usecase"
 )
 
-const allowMigration = false
+const allowMigration = true
 
 func NewServer(serviceConf model.ServiceConfig, routes []route.GroupRoute) *Server {
 	var e = engine.NewEcho()
@@ -43,13 +43,13 @@ func Run(confPath string) {
 	config.MustLoadConfig(confPath, &serviceConf)
 
 	var (
-		appProvider         = provider.NewAppProvider(serviceConf)
-		prescriptionRepo    = repository.NewPrescriptionRepo(appProvider.Postgres)
-		prescriptionHandler = handler.NewPrescriptionHandler(handler.PrescriptionHandlerInject{
-			PrescriptionDetailUseCase: usecase.NewPrescriptionDetailUseCase(prescriptionRepo),
-			PrescriptionCreateUseCase: usecase.NewPrescriptionCreateUseCase(prescriptionRepo),
+		appProvider        = provider.NewAppProvider(serviceConf)
+		appointmentRepo    = repository.NewAppointmentRepo(appProvider.Postgres)
+		appointmentHandler = handler.NewAppointmentHandler(handler.AppointmentHandlerInject{
+			AppointmentDetailUseCase: usecase.NewAppointmentDetailUseCase(appointmentRepo),
+			AppointmentCreateUseCase: usecase.NewAppointmentCreateUseCase(appointmentRepo),
 		})
-		routes = Routes(prescriptionHandler)
+		routes = Routes(appointmentHandler)
 		server = NewServer(serviceConf, routes)
 	)
 

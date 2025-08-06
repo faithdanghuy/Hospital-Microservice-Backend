@@ -11,5 +11,7 @@ export TMP := /c/Users/Nguyen Hi Huu/AppData/Local/Temp
 
 user:
 	go run user-service/cmd/app/main.go
+appointment:
+	go run appointment-service/cmd/app/main.go
 prescription:
 	go run prescription-service/cmd/app/main.go
