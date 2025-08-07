@@ -38,8 +38,8 @@ func Routes(handler handler.UserHandler) []route.GroupRoute {
 				},
 				{
 					Path:    "/update",
-					Method:  method.POST,
-					Handler: handler.HandleLogin,
+					Method:  method.PATCH,
+					Handler: handler.HandleUpdate,
 				},
 			},
 		},

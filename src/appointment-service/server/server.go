@@ -13,7 +13,7 @@ import (
 	"github.com/Hospital-Microservice/hospital-core/transport/http/route"
 )
 
-const allowMigration = true
+const allowMigration = false
 
 func NewServer(serviceConf model.ServiceConfig, routes []route.GroupRoute) *Server {
 	var e = engine.NewEcho()

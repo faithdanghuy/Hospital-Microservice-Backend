@@ -49,6 +49,7 @@ func Run(confPath string) {
 			LoginUseCase:    usecase.NewLoginUseCase(appProvider, userRepo),
 			RegisterUseCase: usecase.NewRegisterUseCase(userRepo),
 			ProfileUseCase:  usecase.NewProfileUseCase(userRepo),
+			UpdateUseCase:   usecase.NewUpdateUseCase(userRepo),
 		})
 		routes = Routes(userHandler)
 		server = NewServer(serviceConf, routes)
