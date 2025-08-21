@@ -8,21 +8,29 @@ import (
 type AppointmentHandler interface {
 	HandleAppointmentDetail(c echo.Context) error
 	HandleAppointmentCreate(c echo.Context) error
+	HandleAppointmentChangeStatus(c echo.Context) error
+	HandleAppointmentFilter(c echo.Context) error
 }
 
 type appointmentHandlerImpl struct {
-	appointmentDetailUseCase usecase.AppointmentDetailUseCase
-	appointmentCreateUseCase usecase.AppointmentCreateUseCase
+	appointmentDetailUseCase       usecase.AppointmentDetailUseCase
+	appointmentCreateUseCase       usecase.AppointmentCreateUseCase
+	appointmentChangeStatusUseCase usecase.AppointmentChangeStatusUseCase
+	appointmentFilterUseCase       usecase.AppointmentFilterUseCase
 }
 
 type AppointmentHandlerInject struct {
-	AppointmentDetailUseCase usecase.AppointmentDetailUseCase
-	AppointmentCreateUseCase usecase.AppointmentCreateUseCase
+	AppointmentDetailUseCase       usecase.AppointmentDetailUseCase
+	AppointmentCreateUseCase       usecase.AppointmentCreateUseCase
+	AppointmentChangeStatusUseCase usecase.AppointmentChangeStatusUseCase
+	AppointmentFilterUseCase       usecase.AppointmentFilterUseCase
 }
 
 func NewAppointmentHandler(inject AppointmentHandlerInject) AppointmentHandler {
 	return &appointmentHandlerImpl{
-		appointmentDetailUseCase: inject.AppointmentDetailUseCase,
-		appointmentCreateUseCase: inject.AppointmentCreateUseCase,
+		appointmentDetailUseCase:       inject.AppointmentDetailUseCase,
+		appointmentCreateUseCase:       inject.AppointmentCreateUseCase,
+		appointmentChangeStatusUseCase: inject.AppointmentChangeStatusUseCase,
+		appointmentFilterUseCase:       inject.AppointmentFilterUseCase,
 	}
 }

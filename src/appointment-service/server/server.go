@@ -46,8 +46,10 @@ func Run(confPath string) {
 		appProvider        = provider.NewAppProvider(serviceConf)
 		appointmentRepo    = repository.NewAppointmentRepo(appProvider.Postgres)
 		appointmentHandler = handler.NewAppointmentHandler(handler.AppointmentHandlerInject{
-			AppointmentDetailUseCase: usecase.NewAppointmentDetailUseCase(appointmentRepo),
-			AppointmentCreateUseCase: usecase.NewAppointmentCreateUseCase(appointmentRepo),
+			AppointmentDetailUseCase:       usecase.NewAppointmentDetailUseCase(appointmentRepo),
+			AppointmentCreateUseCase:       usecase.NewAppointmentCreateUseCase(appointmentRepo),
+			AppointmentChangeStatusUseCase: usecase.NewAppointmentChangeStatusUseCase(appointmentRepo),
+			AppointmentFilterUseCase:       usecase.NewAppointmentFilterUseCase(appointmentRepo),
 		})
 		routes = Routes(appointmentHandler)
 		server = NewServer(serviceConf, routes)

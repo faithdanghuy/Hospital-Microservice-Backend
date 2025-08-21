@@ -26,11 +26,16 @@ func Routes(handler handler.AppointmentHandler) []route.GroupRoute {
 					Method:  method.GET,
 					Handler: handler.HandleAppointmentDetail,
 				},
-				// {
-				// 	Path:    "/filter",
-				// 	Method:  method.GET,
-				// 	Handler: handler.HandleRegister,
-				// },
+				{
+					Path:    "/change-status/:id",
+					Method:  method.PATCH,
+					Handler: handler.HandleAppointmentChangeStatus,
+				},
+				{
+					Path:    "/filter",
+					Method:  method.GET,
+					Handler: handler.HandleAppointmentFilter,
+				},
 				// {
 				// 	Path:    "/delete",
 				// 	Method:  method.DELETE,
