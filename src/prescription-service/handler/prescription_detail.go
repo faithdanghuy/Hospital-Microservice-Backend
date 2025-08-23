@@ -8,6 +8,17 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+// GetPrescription godoc
+// @Summary      Get prescription details
+// @Description  Retrieve details of a prescription by ID
+// @Tags         prescription
+// @Accept       json
+// @Produce      json
+// @Param        id   path      string  true  "Prescription ID"
+// @Success      200  {object}  model.PrescriptionDetailResponse
+// @Failure      404  {object}  response.ErrorResponse
+// @Security     BearerAuth
+// @Router       /prescription-service/prescriptions/{id} [get]
 func (u *prescriptionHandlerImpl) HandlePrescriptionDetail(c echo.Context) error {
 	id := c.Param("id")
 	if id == "" {

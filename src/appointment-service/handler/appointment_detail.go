@@ -8,6 +8,17 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+// GetAppointment godoc
+// @Summary      Get appointment details
+// @Description  Retrieve details of an appointment by ID
+// @Tags         appointment
+// @Accept       json
+// @Produce      json
+// @Param        id   path      string  true  "Appointment ID"
+// @Success      200  {object}  model.AppointmentDetailResponse
+// @Failure      404  {object}  response.ErrorResponse
+// @Security     BearerAuth
+// @Router       /appointment-service/appointments/{id} [get]
 func (u *appointmentHandlerImpl) HandleAppointmentDetail(c echo.Context) error {
 	id := c.Param("id")
 	if id == "" {

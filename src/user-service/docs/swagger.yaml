@@ -1,0 +1,132 @@
+basePath: /user-service
+definitions:
+  req.UserLoginReq:
+    properties:
+      password:
+        type: string
+      phone:
+        type: string
+    required:
+    - password
+    - phone
+    type: object
+  req.UserRegReq:
+    properties:
+      avatar:
+        type: string
+      birthday:
+        type: string
+      email:
+        type: string
+      full_name:
+        type: string
+      password:
+        type: string
+      phone:
+        type: string
+    required:
+    - avatar
+    - birthday
+    - email
+    - full_name
+    - password
+    - phone
+    type: object
+  res.LoginRes:
+    properties:
+      access_token:
+        type: string
+      avatar:
+        type: string
+      birthday:
+        type: string
+      email:
+        type: string
+      full_name:
+        type: string
+      id:
+        type: string
+      password:
+        type: string
+      phone:
+        type: string
+    type: object
+  response.ResErr:
+    properties:
+      errors:
+        items:
+          type: string
+        type: array
+      message:
+        type: string
+      status:
+        type: string
+    type: object
+  response.ResOk:
+    properties:
+      data: {}
+      message:
+        type: string
+      status:
+        type: string
+    type: object
+host: localhost:3080
+info:
+  contact: {}
+  description: API documentation for Hospital Microservice
+  title: Hospital Microservice API
+  version: "1.0"
+paths:
+  /user-service/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate user and return JWT token
+      parameters:
+      - description: Login Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/req.UserLoginReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.LoginRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ResErr'
+      summary: Login user
+      tags:
+      - auth
+  /user-service/auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Create a new user account
+      parameters:
+      - description: Register Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/req.UserRegReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ResOk'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ResErr'
+      summary: Register a new user
+      tags:
+      - auth
+swagger: "2.0"

@@ -10,6 +10,17 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+// CreatePrescription godoc
+// @Summary      Create prescription
+// @Description  Create a new prescription
+// @Tags         prescription
+// @Accept       json
+// @Produce      json
+// @Param        body  body      model.PrescriptionCreateRequest  true  "Prescription Create Request"
+// @Success      201   {object}  model.PrescriptionCreateResponse
+// @Failure      400   {object}  response.ErrorResponse
+// @Security     BearerAuth
+// @Router       /prescription-service/prescriptions [post]
 func (u *prescriptionHandlerImpl) HandlePrescriptionCreate(c echo.Context) error {
 	var prescription req.PrescriptionCreateReq
 	err := c.Bind(&prescription)

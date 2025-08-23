@@ -10,6 +10,17 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+// CreateAppointment godoc
+// @Summary      Create appointment
+// @Description  Create a new appointment
+// @Tags         appointment
+// @Accept       json
+// @Produce      json
+// @Param        body  body      model.AppointmentCreateRequest  true  "Appointment Create Request"
+// @Success      201   {object}  model.AppointmentCreateResponse
+// @Failure      400   {object}  response.ErrorResponse
+// @Security     BearerAuth
+// @Router       /appointment-service/appointments [post]
 func (u *appointmentHandlerImpl) HandleAppointmentCreate(c echo.Context) error {
 	var appointment req.AppointmentCreateReq
 	err := c.Bind(&appointment)

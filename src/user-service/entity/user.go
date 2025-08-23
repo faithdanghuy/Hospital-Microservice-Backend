@@ -11,9 +11,13 @@ type UserEntity struct {
 	FullName *string
 	Email    *string
 	Phone    *string `gorm:"unique"`
-	Password *string
+	Password *string `gorm:"not null"`
 	Avatar   *string
 	Birthday time.Time
+	Role     *string `gorm:"type:enum('patient','doctor','admin');default:'patient'"`
+
+	PatientProfile *PatientProfileEntity `gorm:"foreignKey:UserID;references:ID"`
+	DoctorProfile  *DoctorProfileEntity  `gorm:"foreignKey:UserID;references:ID"`
 }
 
 func (u UserEntity) TableName() string {

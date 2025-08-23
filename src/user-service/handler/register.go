@@ -10,6 +10,16 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+// RegisterUser godoc
+// @Summary      Register a new user
+// @Description  Create a new user account
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        body  body      req.UserRegReq  true  "Register Request"
+// @Success      200 {object} response.ResOk
+// @Failure      400 {object} response.ResErr
+// @Router       /user-service/auth/register [post]
 func (u *userHandlerImpl) HandleRegister(c echo.Context) error {
 	var user req.UserRegReq
 	err := c.Bind(&user)

@@ -11,6 +11,8 @@ import (
 	"github.com/Hospital-Microservice/user-service/provider"
 	"github.com/Hospital-Microservice/user-service/repository"
 	"github.com/Hospital-Microservice/user-service/usecase"
+
+	echoSwagger "github.com/swaggo/echo-swagger"
 )
 
 const allowMigration = false
@@ -54,6 +56,10 @@ func Run(confPath string) {
 		routes = Routes(userHandler)
 		server = NewServer(serviceConf, routes)
 	)
+
+	e := server.Engine
+	g := e.Group("/" + serviceConf.ServiceName)
+	g.GET("/swagger/*", echoSwagger.WrapHandler)
 
 	if allowMigration {
 		migration.Must(appProvider.Postgres.Executor)

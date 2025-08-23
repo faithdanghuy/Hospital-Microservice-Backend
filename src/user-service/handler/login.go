@@ -12,6 +12,16 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+// LoginUser godoc
+// @Summary      Login user
+// @Description  Authenticate user and return JWT token
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        body  body      req.UserLoginReq  true  "Login Request"
+// @Success 200 {object} res.LoginRes
+// @Failure      400 {object} response.ResErr
+// @Router       /user-service/auth/login [post]
 func (u *userHandlerImpl) HandleLogin(c echo.Context) error {
 	var user req.UserLoginReq
 	err := c.Bind(&user)
