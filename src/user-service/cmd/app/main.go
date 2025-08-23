@@ -10,17 +10,12 @@ import (
 // @description API documentation for Hospital Microservice
 // @host localhost:3080
 // @BasePath /user-service
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
+// @description Type "Bearer {your-token}"
 func main() {
 
 	server.Run("/Hospital-Microservice/src/user-service/deploy/local_conf.env")
-	// e := echo.New()
-	// g := e.Group("/user-service")
-
-	// g.GET("/swagger/*", echoSwagger.WrapHandler)
-	// port := os.Getenv("SERVICE_PORT")
-	// if port == "" {
-	// 	port = "3080"
-	// }
-	// e.Logger.Fatal(e.Start(":" + port))
 
 }

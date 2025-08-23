@@ -11,6 +11,10 @@ import (
 	. "github.com/Hospital-Microservice/hospital-core/transport/http"
 	"github.com/Hospital-Microservice/hospital-core/transport/http/engine"
 	"github.com/Hospital-Microservice/hospital-core/transport/http/route"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
+
+	echoSwagger "github.com/swaggo/echo-swagger"
 )
 
 const allowMigration = false
@@ -54,6 +58,16 @@ func Run(confPath string) {
 		routes = Routes(appointmentHandler)
 		server = NewServer(serviceConf, routes)
 	)
+
+	e := server.Engine
+	g := e.Group("/" + serviceConf.ServiceName)
+	g.GET("/swagger/*", echoSwagger.WrapHandler)
+
+	server.Engine.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowMethods: []string{echo.GET, echo.POST, echo.PATCH, echo.PUT, echo.DELETE},
+		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept, echo.HeaderAuthorization},
+	}))
 
 	if allowMigration {
 		migration.Must(appProvider.Postgres.Executor)

@@ -21,7 +21,7 @@ import (
 // @Param        body  body      req.UserLoginReq  true  "Login Request"
 // @Success 200 {object} res.LoginRes
 // @Failure      400 {object} response.ResErr
-// @Router       /user-service/auth/login [post]
+// @Router       /auth/login [post]
 func (u *userHandlerImpl) HandleLogin(c echo.Context) error {
 	var user req.UserLoginReq
 	err := c.Bind(&user)

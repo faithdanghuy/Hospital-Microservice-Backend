@@ -1,76 +1,68 @@
-basePath: /user-service
+basePath: /appointment-service
 definitions:
-  req.UserLoginReq:
+  req.AppointmentChangeStatusReq:
     properties:
-      password:
-        type: string
-      phone:
+      status:
+        enum:
+        - pending
+        - confirmed
+        - cancelled
         type: string
     required:
-    - password
-    - phone
+    - status
     type: object
-  req.UserRegReq:
+  req.AppointmentCreateReq:
     properties:
-      avatar:
+      confirmed_at:
         type: string
-      birthday:
+      doctor_id:
         type: string
-      email:
+      note:
         type: string
-      full_name:
+      patient_id:
         type: string
-      password:
+      scheduled_at:
         type: string
-      phone:
+      status:
+        enum:
+        - pending
+        - confirmed
+        - cancelled
         type: string
     required:
-    - avatar
-    - birthday
-    - email
-    - full_name
-    - password
-    - phone
+    - doctor_id
+    - patient_id
+    - scheduled_at
+    - status
     type: object
-  req.UserUpdateReq:
+  req.AppointmentFilterReq:
     properties:
-      avatar:
+      doctor_id:
         type: string
-      birthday:
+      from_date:
         type: string
-      email:
+      patient_id:
         type: string
-      full_name:
+      status:
         type: string
-      password:
+      to_date:
         type: string
-      phone:
-        type: string
-    required:
-    - avatar
-    - birthday
-    - email
-    - full_name
-    - password
-    - phone
     type: object
-  res.LoginRes:
+  res.AppointmentDetailRes:
     properties:
-      access_token:
+      confirmed_at:
         type: string
-      avatar:
-        type: string
-      birthday:
-        type: string
-      email:
-        type: string
-      full_name:
+      doctor_id:
         type: string
       id:
         type: string
-      password:
+      note:
         type: string
-      phone:
+      patient_id:
+        type: string
+      scheduled_at:
+        type: string
+      status:
         type: string
     type: object
   response.ResErr:
@@ -99,19 +91,26 @@ info:
   title: Hospital Microservice API
   version: "1.0"
 paths:
-  /account/profile:
+  /appointment-service/appointments:
     get:
       consumes:
       - application/json
-      description: Retrieve profile for the authenticated user (from JWT claims)
+      description: Retrieve appointments with filters
+      parameters:
+      - description: Appointment Filter Request
+        in: body
+        name: filter
+        required: true
+        schema:
+          $ref: '#/definitions/req.AppointmentFilterReq'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            additionalProperties: true
-            type: object
+            items: {}
+            type: array
         "400":
           description: Bad Request
           schema:
@@ -126,84 +125,80 @@ paths:
             $ref: '#/definitions/response.ResErr'
       security:
       - BearerAuth: []
-      summary: Get current user profile
+      summary: Get appointments with filters
       tags:
-      - account
-  /account/update:
+      - appointment
+    post:
+      consumes:
+      - application/json
+      description: Create a new appointment
+      parameters:
+      - description: Appointment Create Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/req.AppointmentCreateReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.ResOk'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ResErr'
+      security:
+      - BearerAuth: []
+      summary: Create appointment
+      tags:
+      - appointment
+  /appointment-service/appointments/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve details of an appointment by ID
+      parameters:
+      - description: Appointment ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.AppointmentDetailRes'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ResErr'
+      security:
+      - BearerAuth: []
+      summary: Get appointment details
+      tags:
+      - appointment
+  /appointment-service/appointments/{id}/status:
     patch:
       consumes:
       - application/json
-      description: Update profile data for the authenticated user
+      description: Change the status of an appointment by ID
       parameters:
-      - description: Update Request
+      - description: Appointment ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Appointment Change Status Request
         in: body
         name: body
         required: true
         schema:
-          $ref: '#/definitions/req.UserUpdateReq'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties: true
-            type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/response.ResErr'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/response.ResErr'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.ResErr'
-      security:
-      - BearerAuth: []
-      summary: Update current user
-      tags:
-      - account
-  /auth/login:
-    post:
-      consumes:
-      - application/json
-      description: Authenticate user and return JWT token
-      parameters:
-      - description: Login Request
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/req.UserLoginReq'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/res.LoginRes'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/response.ResErr'
-      summary: Login user
-      tags:
-      - auth
-  /auth/register:
-    post:
-      consumes:
-      - application/json
-      description: Create a new user account
-      parameters:
-      - description: Register Request
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/req.UserRegReq'
+          $ref: '#/definitions/req.AppointmentChangeStatusReq'
       produces:
       - application/json
       responses:
@@ -211,13 +206,15 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/response.ResOk'
-        "400":
-          description: Bad Request
+        "404":
+          description: Not Found
           schema:
             $ref: '#/definitions/response.ResErr'
-      summary: Register a new user
+      security:
+      - BearerAuth: []
+      summary: Change appointment status
       tags:
-      - auth
+      - appointment
 securityDefinitions:
   BearerAuth:
     description: Type "Bearer {your-token}"

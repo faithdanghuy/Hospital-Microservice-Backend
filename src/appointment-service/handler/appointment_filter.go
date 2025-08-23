@@ -11,6 +11,19 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+// GetAppointments godoc
+// @Summary      Get appointments with filters
+// @Description  Retrieve appointments with filters
+// @Tags         appointment
+// @Accept       json
+// @Produce      json
+// @Param        filter  body      req.AppointmentFilterReq  true  "Appointment Filter Request"
+// @Success      200  {object}  []interface{}
+// @Failure      400  {object}  response.ResErr
+// @Failure      401  {object}  response.ResErr
+// @Failure      500  {object}  response.ResErr
+// @Security     BearerAuth
+// @Router       /appointment-service/appointments [get]
 func (u *appointmentHandlerImpl) HandleAppointmentFilter(c echo.Context) error {
 	user := c.Get("user")
 	if user == nil {

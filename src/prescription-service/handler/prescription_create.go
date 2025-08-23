@@ -16,9 +16,9 @@ import (
 // @Tags         prescription
 // @Accept       json
 // @Produce      json
-// @Param        body  body      model.PrescriptionCreateRequest  true  "Prescription Create Request"
-// @Success      201   {object}  model.PrescriptionCreateResponse
-// @Failure      400   {object}  response.ErrorResponse
+// @Param        body  body      req.PrescriptionCreateReq  true  "Prescription Create Request"
+// @Success      201   {object}  response.ResOk
+// @Failure      400   {object}  response.ResErr
 // @Security     BearerAuth
 // @Router       /prescription-service/prescriptions [post]
 func (u *prescriptionHandlerImpl) HandlePrescriptionCreate(c echo.Context) error {

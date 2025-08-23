@@ -16,9 +16,9 @@ import (
 // @Tags         appointment
 // @Accept       json
 // @Produce      json
-// @Param        body  body      model.AppointmentCreateRequest  true  "Appointment Create Request"
-// @Success      201   {object}  model.AppointmentCreateResponse
-// @Failure      400   {object}  response.ErrorResponse
+// @Param        body  body      req.AppointmentCreateReq  true  "Appointment Create Request"
+// @Success      201   {object}  response.ResOk
+// @Failure      400   {object}  response.ResErr
 // @Security     BearerAuth
 // @Router       /appointment-service/appointments [post]
 func (u *appointmentHandlerImpl) HandleAppointmentCreate(c echo.Context) error {

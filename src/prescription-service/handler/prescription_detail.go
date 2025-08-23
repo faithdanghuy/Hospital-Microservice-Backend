@@ -15,8 +15,8 @@ import (
 // @Accept       json
 // @Produce      json
 // @Param        id   path      string  true  "Prescription ID"
-// @Success      200  {object}  model.PrescriptionDetailResponse
-// @Failure      404  {object}  response.ErrorResponse
+// @Success      200  {object}  res.PrescriptionDetailRes
+// @Failure      404  {object}  response.ResErr
 // @Security     BearerAuth
 // @Router       /prescription-service/prescriptions/{id} [get]
 func (u *prescriptionHandlerImpl) HandlePrescriptionDetail(c echo.Context) error {

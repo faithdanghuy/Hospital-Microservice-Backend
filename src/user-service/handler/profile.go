@@ -8,6 +8,18 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+// Profile godoc
+// @Summary      Get current user profile
+// @Description  Retrieve profile for the authenticated user (from JWT claims)
+// @Tags         account
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Success      200  {object}  map[string]interface{}
+// @Failure      400  {object}  response.ResErr
+// @Failure      401  {object}  response.ResErr
+// @Failure      500  {object}  response.ResErr
+// @Router       /account/profile [get]
 func (u *userHandlerImpl) HandleProfile(c echo.Context) error {
 	claims := c.Get("user").(token.JwtCustomClaims)
 	if claims.ID == "" {

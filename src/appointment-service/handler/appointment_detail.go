@@ -15,8 +15,8 @@ import (
 // @Accept       json
 // @Produce      json
 // @Param        id   path      string  true  "Appointment ID"
-// @Success      200  {object}  model.AppointmentDetailResponse
-// @Failure      404  {object}  response.ErrorResponse
+// @Success      200  {object}  res.AppointmentDetailRes
+// @Failure      404  {object}  response.ResErr
 // @Security     BearerAuth
 // @Router       /appointment-service/appointments/{id} [get]
 func (u *appointmentHandlerImpl) HandleAppointmentDetail(c echo.Context) error {

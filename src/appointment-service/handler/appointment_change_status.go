@@ -9,6 +9,18 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+// ChangeAppointmentStatus godoc
+// @Summary      Change appointment status
+// @Description  Change the status of an appointment by ID
+// @Tags         appointment
+// @Accept       json
+// @Produce      json
+// @Param        id   path      string  true  "Appointment ID"
+// @Param        body  body      req.AppointmentChangeStatusReq  true  "Appointment Change Status Request"
+// @Success      200  {object}  response.ResOk
+// @Failure      404  {object}  response.ResErr
+// @Security     BearerAuth
+// @Router       /appointment-service/appointments/{id}/status [patch]
 func (u *appointmentHandlerImpl) HandleAppointmentChangeStatus(c echo.Context) error {
 	id := c.Param("id")
 	if id == "" {
