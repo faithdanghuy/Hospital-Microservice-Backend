@@ -12,10 +12,16 @@ import (
 )
 
 func (u *appointmentHandlerImpl) HandleAppointmentFilter(c echo.Context) error {
-	claims := c.Get("user").(token.JwtCustomClaims)
-	if claims.ID == "" {
-		return response.Error(c, http.StatusBadRequest)
+	user := c.Get("user")
+	if user == nil {
+		return response.Error(c, http.StatusUnauthorized, "missing token")
 	}
+
+	claims, ok := user.(token.JwtCustomClaims)
+	if !ok {
+		return response.Error(c, http.StatusUnauthorized, "invalid claims")
+	}
+
 	var filterReq req.AppointmentFilterReq
 	if err := c.Bind(&filterReq); err != nil {
 		return response.Error(c, http.StatusBadRequest, "invalid query params")
@@ -42,5 +48,5 @@ func (u *appointmentHandlerImpl) HandleAppointmentFilter(c echo.Context) error {
 		res = append(res, r)
 	}
 
-	return response.OK(c, http.StatusOK, "appointments retrieved successfully", res)
+	return response.OK(c, http.StatusOK, "success", res)
 }

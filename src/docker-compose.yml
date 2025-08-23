@@ -1,0 +1,66 @@
+services:
+  user-service:
+    build: 
+      context: .
+      dockerfile: user-service/Dockerfile
+    container_name: user-service
+    volumes:
+      - ./user-service/deploy/local_conf.env:/Hospital-Microservice/src/user-service/deploy/local_conf.env
+      - ./user-service/deploy/ca.pem:/app/ca.pem
+    ports:
+      - "3000:3000"
+    environment:
+      SERVICE_NAME: user-service
+      SERVICE_PORT: 3000
+      DB_HOST: updt-hcmus-hcmus-udpt.c.aivencloud.com
+      DB_PORT: 28333
+      DB_USER: avnadmin
+      DB_PWD: AVNS_VW_PgBpYHhVYKtrPwwa
+      DB_DBNAME: user_service_db
+      DB_SSLMODE: verify-ca
+      DB_SSLROOTCERT: /app/ca.pem
+      JWT_SECRET_KEY: 127ccd8ecf2ac84ede74247dacb87d51498245970b8076a49052a212085c6524
+
+  appointment-service:
+    build:
+      context: .
+      dockerfile: appointment-service/Dockerfile
+    container_name: appointment-service
+    volumes:
+      - ./appointment-service/deploy/local_conf.env:/Hospital-Microservice/src/appointment-service/deploy/local_conf.env
+      - ./appointment-service/deploy/ca.pem:/app/ca.pem
+    ports:
+      - "3001:3001"
+    environment:
+      SERVICE_NAME: appointment-service
+      SERVICE_PORT: 3001
+      DB_HOST: updt-hcmus-hcmus-udpt.c.aivencloud.com
+      DB_PORT: 28333
+      DB_USER: avnadmin
+      DB_PWD: AVNS_VW_PgBpYHhVYKtrPwwa
+      DB_DBNAME: appointment_service_db
+      DB_SSLMODE: verify-ca
+      DB_SSLROOTCERT: /app/ca.pem
+      JWT_SECRET_KEY: 127ccd8ecf2ac84ede74247dacb87d51498245970b8076a49052a212085c6524
+
+  prescription-service:
+    build:
+      context: .
+      dockerfile: prescription-service/Dockerfile
+    container_name: prescription-service
+    volumes:
+      - ./prescription-service/deploy/local_conf.env:/Hospital-Microservice/src/prescription-service/deploy/local_conf.env
+      - ./prescription-service/deploy/ca.pem:/app/ca.pem
+    ports:
+      - "3002:3002"
+    environment:
+      SERVICE_NAME: prescription-service
+      SERVICE_PORT: 3002
+      DB_HOST: updt-hcmus-hcmus-udpt.c.aivencloud.com
+      DB_PORT: 28333
+      DB_USER: avnadmin
+      DB_PWD: AVNS_VW_PgBpYHhVYKtrPwwa
+      DB_DBNAME: prescription_service_db
+      DB_SSLMODE: verify-ca
+      DB_SSLROOTCERT: /app/ca.pem
+      JWT_SECRET_KEY: 127ccd8ecf2ac84ede74247dacb87d51498245970b8076a49052a212085c6524

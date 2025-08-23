@@ -9,6 +9,12 @@ export PATH := $(GOROOT)/bin:$(GOBIN):$(PATH)
 export TEMP := /c/Users/Nguyen Hi Huu/AppData/Local/Temp
 export TMP := /c/Users/Nguyen Hi Huu/AppData/Local/Temp
 
+all:
+	go run user-service/cmd/app/main.go &
+	go run appointment-service/cmd/app/main.go &
+	go run prescription-service/cmd/app/main.go &
+	wait
+
 user:
 	go run user-service/cmd/app/main.go
 appointment:

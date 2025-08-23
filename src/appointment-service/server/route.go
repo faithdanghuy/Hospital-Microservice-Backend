@@ -2,14 +2,19 @@ package server
 
 import (
 	"github.com/Hospital-Microservice/appointment-service/handler"
+	"github.com/Hospital-Microservice/hospital-core/middleware"
 	"github.com/Hospital-Microservice/hospital-core/transport/http/method"
 	"github.com/Hospital-Microservice/hospital-core/transport/http/route"
+	"github.com/labstack/echo/v4"
 )
 
 func Routes(handler handler.AppointmentHandler) []route.GroupRoute {
 	return []route.GroupRoute{
 		{
 			Prefix: "/appointment",
+			Middlewares: []echo.MiddlewareFunc{
+				middleware.JWT(),
+			},
 			Routes: []route.Route{
 				{
 					Path:    "/create",

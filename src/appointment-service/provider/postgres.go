@@ -17,6 +17,6 @@ func ProvidePostgres(config model.ServiceConfig) *db.Database {
 		User:                        config.DBUser,
 		Password:                    config.DBPwd,
 		SSLMode:                     db.VerifyCA,
-		SSLCertAuthorityCertificate: "E:/Hospital-Microservice/src/appointment-service/deploy/ca.pem",
+		SSLCertAuthorityCertificate: config.DBSSLRootCert,
 	})
 }
