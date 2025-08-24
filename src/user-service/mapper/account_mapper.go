@@ -13,5 +13,6 @@ func TransformUserEntityToRes(userEntity *entity.UserEntity) *res.LoginRes {
 		Phone:    *userEntity.Phone,
 		Avatar:   *userEntity.Avatar,
 		Birthday: userEntity.Birthday,
+		Role:     *userEntity.Role,
 	}
 }

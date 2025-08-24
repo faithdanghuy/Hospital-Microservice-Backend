@@ -32,5 +32,19 @@ func (u *userHandlerImpl) HandleProfile(c echo.Context) error {
 	}
 
 	profile.Password = nil
-	return response.SimpleOK(c, http.StatusOK, profile)
+
+	resp := map[string]interface{}{
+		"user": profile,
+	}
+
+	if profile.Role != nil {
+		switch *profile.Role {
+		case "doctor":
+			resp["doctor_profile"] = profile.DoctorProfile
+		case "patient":
+			resp["patient_profile"] = profile.PatientProfile
+		}
+	}
+
+	return response.SimpleOK(c, http.StatusOK, resp)
 }

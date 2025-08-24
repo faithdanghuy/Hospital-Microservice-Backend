@@ -9,6 +9,8 @@ func Must(db *gorm.DB) {
 	db.Exec("CREATE SCHEMA IF NOT EXISTS user_service")
 	err := db.Debug().AutoMigrate(
 		&entity.UserEntity{},
+		&entity.PatientProfileEntity{},
+		&entity.DoctorProfileEntity{},
 	)
 	if err != nil {
 		panic(err)

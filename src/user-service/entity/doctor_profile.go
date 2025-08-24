@@ -6,10 +6,8 @@ import (
 
 type DoctorProfileEntity struct {
 	record.BaseEntity
-	UserID         uint `gorm:"uniqueIndex"` // FK → User.ID
-	Specialization string
-	Phone          string
-	Email          string
+	UserID         *string // FK → User.ID
+	Specialization *string
 
 	User UserEntity `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:UserID;references:ID"`
 }

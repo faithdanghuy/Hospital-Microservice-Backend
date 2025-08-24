@@ -220,12 +220,11 @@ const docTemplate = `{
         "req.UserRegReq": {
             "type": "object",
             "required": [
-                "avatar",
                 "birthday",
                 "email",
                 "full_name",
-                "password",
-                "phone"
+                "phone",
+                "role"
             ],
             "properties": {
                 "avatar": {
@@ -240,11 +239,16 @@ const docTemplate = `{
                 "full_name": {
                     "type": "string"
                 },
-                "password": {
-                    "type": "string"
-                },
                 "phone": {
                     "type": "string"
+                },
+                "role": {
+                    "type": "string",
+                    "enum": [
+                        "patient",
+                        "doctor",
+                        "admin"
+                    ]
                 }
             }
         },
@@ -291,6 +295,9 @@ const docTemplate = `{
                 "birthday": {
                     "type": "string"
                 },
+                "created_at": {
+                    "type": "string"
+                },
                 "email": {
                     "type": "string"
                 },
@@ -304,6 +311,12 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "phone": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "updated_at": {
                     "type": "string"
                 }
             }

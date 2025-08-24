@@ -16,8 +16,8 @@ func TransformRegReqToEntity(req req.UserRegReq) *entity.UserEntity {
 		FullName: pointer.String(req.FullName),
 		Email:    pointer.String(req.Email),
 		Phone:    pointer.String(req.Phone),
-		Password: pointer.String(req.Password),
 		Avatar:   pointer.String(req.Avatar),
+		Role:     pointer.String(req.Role),
 		Birthday: req.Birthday,
 	}
 }

@@ -14,7 +14,7 @@ type UserEntity struct {
 	Password *string `gorm:"not null"`
 	Avatar   *string
 	Birthday time.Time
-	Role     *string `gorm:"type:enum('patient','doctor','admin');default:'patient'"`
+	Role     *string `gorm:"type:text;check:role IN ('patient','doctor','admin');default:'patient'"`
 
 	PatientProfile *PatientProfileEntity `gorm:"foreignKey:UserID;references:ID"`
 	DoctorProfile  *DoctorProfileEntity  `gorm:"foreignKey:UserID;references:ID"`

@@ -13,6 +13,8 @@ type UserRepo interface {
 	UpdateUser(ctx context.Context, user entity.UserEntity) error
 	FindUserByPhone(ctx context.Context, user entity.UserEntity) (*entity.UserEntity, error)
 	FindUserByID(ctx context.Context, ID string) (*entity.UserEntity, error)
+	CreateEmptyPatientProfile(ctx context.Context, userID *string) error
+	CreateEmptyDoctorProfile(ctx context.Context, userID *string) error
 }
 
 type userRepoImpl struct {

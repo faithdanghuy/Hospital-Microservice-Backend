@@ -6,11 +6,10 @@ import (
 
 type PatientProfileEntity struct {
 	record.BaseEntity
-	UserID         uint `gorm:"uniqueIndex"` // FK → User.ID
-	DateOfBirth    string
-	Gender         string
-	Address        string
-	MedicalHistory string
+	UserID         *string // FK → User.ID
+	Gender         *string
+	Address        *string
+	MedicalHistory *string
 
 	User UserEntity `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:UserID;references:ID"`
 }
