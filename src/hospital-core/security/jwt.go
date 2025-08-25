@@ -15,10 +15,11 @@ type Token struct {
 	RefreshToken *string `json:"refresh_token,omitempty"`
 }
 
-func GenToken(ID string, duration time.Duration) (*string, error) {
+func GenToken(ID string, AccountType string, duration time.Duration) (*string, error) {
 	var (
 		claimsToken = &coreModel.JwtCustomClaims{
-			ID: ID,
+			ID:          ID,
+			AccountType: AccountType,
 			RegisteredClaims: jwt.RegisteredClaims{
 				ExpiresAt: jwt.NewNumericDate(time.Now().Add(duration)),
 			},

@@ -39,7 +39,7 @@ func (u *userHandlerImpl) HandleLogin(c echo.Context) error {
 		return response.Error(c, http.StatusBadRequest, err.Error())
 	}
 
-	accessToken, err := security.GenToken(*userEntity.ID, time.Hour*24)
+	accessToken, err := security.GenToken(*userEntity.ID, *userEntity.Role, time.Hour*24)
 	if err != nil {
 		return err
 	}

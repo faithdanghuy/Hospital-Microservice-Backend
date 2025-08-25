@@ -23,6 +23,14 @@ func Routes(handler handler.UserHandler) []route.GroupRoute {
 					Method:  method.POST,
 					Handler: handler.HandleRegister,
 				},
+				{
+					Path:    "/change-password",
+					Method:  method.PATCH,
+					Handler: handler.HandleChangePassword,
+					Middlewares: []echo.MiddlewareFunc{
+						middleware.JWT(),
+					},
+				},
 			},
 		},
 		{
@@ -40,6 +48,16 @@ func Routes(handler handler.UserHandler) []route.GroupRoute {
 					Path:    "/update",
 					Method:  method.PATCH,
 					Handler: handler.HandleUpdate,
+				},
+				{
+					Path:    "/filter",
+					Method:  method.GET,
+					Handler: handler.HandleFilterUsers,
+				},
+				{
+					Path:    "/detail/:id",
+					Method:  method.GET,
+					Handler: handler.HandleUserDetail,
 				},
 			},
 		},

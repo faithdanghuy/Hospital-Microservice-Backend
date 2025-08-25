@@ -50,10 +50,13 @@ func Run(confPath string) {
 		appProvider = provider.NewAppProvider(serviceConf)
 		userRepo    = repository.NewUserRepo(appProvider.Postgres)
 		userHandler = handler.NewUserHandler(handler.UserHandlerInject{
-			LoginUseCase:    usecase.NewLoginUseCase(appProvider, userRepo),
-			RegisterUseCase: usecase.NewRegisterUseCase(userRepo),
-			ProfileUseCase:  usecase.NewProfileUseCase(userRepo),
-			UpdateUseCase:   usecase.NewUpdateUseCase(userRepo),
+			LoginUseCase:       usecase.NewLoginUseCase(appProvider, userRepo),
+			RegisterUseCase:    usecase.NewRegisterUseCase(userRepo),
+			ProfileUseCase:     usecase.NewProfileUseCase(userRepo),
+			UpdateUseCase:      usecase.NewUpdateUseCase(userRepo),
+			ChangePwdUseCase:   usecase.NewChangePasswordUseCase(userRepo),
+			FilterUsersUseCase: usecase.NewFilterUsersUseCase(userRepo),
+			UserDetailUseCase:  usecase.NewUserDetailUseCase(userRepo),
 		})
 		routes = Routes(userHandler)
 		server = NewServer(serviceConf, routes)

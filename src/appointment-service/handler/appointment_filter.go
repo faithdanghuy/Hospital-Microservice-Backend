@@ -27,12 +27,12 @@ import (
 func (u *appointmentHandlerImpl) HandleAppointmentFilter(c echo.Context) error {
 	user := c.Get("user")
 	if user == nil {
-		return response.Error(c, http.StatusUnauthorized, "missing token")
+		return response.Error(c, http.StatusUnauthorized, "unauthorized")
 	}
 
 	claims, ok := user.(token.JwtCustomClaims)
 	if !ok {
-		return response.Error(c, http.StatusUnauthorized, "invalid claims")
+		return response.Error(c, http.StatusUnauthorized, "invalid token")
 	}
 
 	var filterReq req.AppointmentFilterReq

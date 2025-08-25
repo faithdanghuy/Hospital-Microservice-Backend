@@ -10,3 +10,6 @@ make all
 ### Reset Swagger
 swag init --generalInfo cmd/app/main.go --output ./docs --parseDependency
 
+### Start ngrok
+ngrok http 3080
+

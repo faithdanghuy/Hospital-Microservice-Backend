@@ -1,5 +1,15 @@
 basePath: /user-service
 definitions:
+  req.UserChangePasswordReq:
+    properties:
+      new_password:
+        type: string
+      old_password:
+        type: string
+    required:
+    - new_password
+    - old_password
+    type: object
   req.UserLoginReq:
     properties:
       password:
@@ -108,6 +118,97 @@ info:
   title: Hospital Microservice API
   version: "1.0"
 paths:
+  /account/detail/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve detailed information for a specific user
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ResErr'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ResErr'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.ResErr'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ResErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ResErr'
+      security:
+      - BearerAuth: []
+      summary: Get user detail
+      tags:
+      - account
+  /account/filter:
+    get:
+      consumes:
+      - application/json
+      description: Filter users with pagination (only admin can access)
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Sort
+        in: query
+        name: sort
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ResErr'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ResErr'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.ResErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ResErr'
+      security:
+      - BearerAuth: []
+      summary: Filter users with pagination
+      tags:
+      - account
   /account/profile:
     get:
       consumes:
@@ -175,6 +276,43 @@ paths:
       summary: Update current user
       tags:
       - account
+  /auth/change-password:
+    patch:
+      consumes:
+      - application/json
+      description: Update password for the authenticated user
+      parameters:
+      - description: Change Password Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/req.UserChangePasswordReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ResErr'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ResErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ResErr'
+      security:
+      - BearerAuth: []
+      summary: Change password
+      tags:
+      - auth
   /auth/login:
     post:
       consumes:

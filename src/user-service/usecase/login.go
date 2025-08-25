@@ -32,6 +32,10 @@ func (l *loginUseCaseImpl) Execute(
 		return nil, err
 	}
 
+	if user == nil || user.Password == nil {
+		return nil, errors.New("user not found")
+	}
+
 	if !security.VerifyPassword(pwd, *user.Password) {
 		return nil, errors.New("password does not match")
 	}

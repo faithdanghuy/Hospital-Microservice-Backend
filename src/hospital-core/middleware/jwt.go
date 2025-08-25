@@ -39,8 +39,20 @@ func parseJWT(auth string) (*jwt.Token, error) {
 // setCustomClaims sets custom JWT claims to the echo context.
 func setCustomClaims(c echo.Context, token *jwt.Token) {
 	claims, _ := token.Claims.(jwt.MapClaims)
+	var (
+		id          string
+		accountType string
+	)
+	if v, ok := claims["id"].(string); ok {
+		id = v
+	}
+	if v, ok := claims["account_type"].(string); ok {
+		accountType = v
+	}
+
 	c.Set("user", coreModel.JwtCustomClaims{
-		ID: claims["id"].(string),
+		ID:          id,
+		AccountType: accountType,
 	})
 }
 
