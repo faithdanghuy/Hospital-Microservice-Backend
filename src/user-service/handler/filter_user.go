@@ -9,7 +9,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-// FilterUsers godoc
+// HandleFilterUsers godoc
 // @Summary      Filter users with pagination
 // @Description  Filter users with pagination (only admin can access)
 // @Tags         account
@@ -18,6 +18,7 @@ import (
 // @Param        limit   query  int    false  "Limit"
 // @Param        page    query  int    false  "Page"
 // @Param        sort    query  string false  "Sort"
+// @Param        role    query  string false  "Role filter (admin|doctor|patient)"
 // @Security     BearerAuth
 // @Success      200  {object}  map[string]interface{}
 // @Failure      400  {object}  response.ResErr
@@ -36,14 +37,16 @@ func (u *userHandlerImpl) HandleFilterUsers(c echo.Context) error {
 		return response.Error(c, http.StatusUnauthorized, "Invalid Token")
 	}
 	if claims.AccountType != "admin" {
-		return response.OK(c, http.StatusOK, "Success", []interface{}{})
+		return response.Error(c, http.StatusForbidden, "Forbidden")
 	}
 
 	p := new(record.Pagination)
 	if err := c.Bind(p); err != nil {
 		return response.Error(c, http.StatusBadRequest, err.Error())
 	}
-	result, err := u.filterUsersUseCase.Execute(c.Request().Context(), p)
+	role := c.QueryParam("role")
+
+	result, err := u.filterUsersUseCase.Execute(c.Request().Context(), p, role)
 	if err != nil {
 		return response.Error(c, http.StatusInternalServerError, err.Error())
 	}

@@ -12,10 +12,9 @@ func (u *userRepoImpl) FindUserByPhone(
 ) (*entity.UserEntity, error) {
 	var userEntity entity.UserEntity
 
-	var findQuery = u.DB.Executor.WithContext(ctx).
-		Where("phone = ?", user.Phone)
-
-	if err := findQuery.Find(&userEntity).Error; err != nil {
+	if err := u.DB.Executor.WithContext(ctx).
+		Where("phone = ?", user.Phone).
+		First(&userEntity).Error; err != nil {
 		return nil, err
 	}
 

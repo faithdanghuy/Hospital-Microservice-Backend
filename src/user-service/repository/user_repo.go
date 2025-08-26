@@ -14,11 +14,10 @@ type UserRepo interface {
 	UpdateUser(ctx context.Context, user entity.UserEntity) error
 	FindUserByPhone(ctx context.Context, user entity.UserEntity) (*entity.UserEntity, error)
 	FindUserByID(ctx context.Context, ID string) (*entity.UserEntity, error)
-	CreateEmptyPatientProfile(ctx context.Context, userID *string) error
-	CreateEmptyDoctorProfile(ctx context.Context, userID *string) error
 	ChangePassword(ctx context.Context, oldPwd, newPwd string) error
-	FilterUsers(ctx context.Context, pagination *record.Pagination) (*record.Pagination, error)
+	FilterUsers(ctx context.Context, pagination *record.Pagination, role string) (*record.Pagination, error)
 	GetUserDetail(ctx context.Context, ID string) (*entity.UserEntity, error)
+	SoftDeleteUser(ctx context.Context, userID string) error
 }
 
 type userRepoImpl struct {

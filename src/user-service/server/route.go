@@ -59,6 +59,16 @@ func Routes(handler handler.UserHandler) []route.GroupRoute {
 					Method:  method.GET,
 					Handler: handler.HandleUserDetail,
 				},
+				{
+					Path:    "/edit/:id",
+					Method:  method.PATCH,
+					Handler: handler.HandleEditUser,
+				},
+				{
+					Path:    "/delete/:id",
+					Method:  method.DELETE,
+					Handler: handler.HandleDeleteUser,
+				},
 			},
 		},
 	}

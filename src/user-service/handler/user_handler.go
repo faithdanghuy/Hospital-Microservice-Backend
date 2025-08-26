@@ -13,6 +13,8 @@ type UserHandler interface {
 	HandleChangePassword(c echo.Context) error
 	HandleFilterUsers(c echo.Context) error
 	HandleUserDetail(c echo.Context) error
+	HandleEditUser(c echo.Context) error
+	HandleDeleteUser(c echo.Context) error
 }
 
 type userHandlerImpl struct {
@@ -23,6 +25,8 @@ type userHandlerImpl struct {
 	changePwdUseCase   usecase.ChangePasswordUseCase
 	filterUsersUseCase usecase.FilterUsersUseCase
 	userDetailUseCase  usecase.UserDetailUseCase
+	editUserUseCase    usecase.EditUserUseCase
+	deleteUserUseCase  usecase.DeleteUserUseCase
 }
 
 type UserHandlerInject struct {
@@ -33,6 +37,8 @@ type UserHandlerInject struct {
 	ChangePwdUseCase   usecase.ChangePasswordUseCase
 	FilterUsersUseCase usecase.FilterUsersUseCase
 	UserDetailUseCase  usecase.UserDetailUseCase
+	EditUserUseCase    usecase.EditUserUseCase
+	DeleteUserUseCase  usecase.DeleteUserUseCase
 }
 
 func NewUserHandler(inject UserHandlerInject) UserHandler {
@@ -44,5 +50,7 @@ func NewUserHandler(inject UserHandlerInject) UserHandler {
 		changePwdUseCase:   inject.ChangePwdUseCase,
 		filterUsersUseCase: inject.FilterUsersUseCase,
 		userDetailUseCase:  inject.UserDetailUseCase,
+		editUserUseCase:    inject.EditUserUseCase,
+		deleteUserUseCase:  inject.DeleteUserUseCase,
 	}
 }

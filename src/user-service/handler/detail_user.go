@@ -47,7 +47,6 @@ func (u *userHandlerImpl) HandleUserDetail(c echo.Context) error {
 		return response.Error(c, http.StatusNotFound, "User Not Found")
 	}
 
-	// Role-based access control
 	switch claims.AccountType {
 	case "patient":
 		if claims.ID != targetUserID {
@@ -58,27 +57,11 @@ func (u *userHandlerImpl) HandleUserDetail(c echo.Context) error {
 			return response.Error(c, http.StatusForbidden, "Unauthorized Role")
 		}
 	case "admin":
-		// admin can view any profile
 	default:
 		return response.Error(c, http.StatusForbidden, "Unauthorized Role")
 	}
 
-	// Remove sensitive data
 	profile.Password = nil
 
-	resp := map[string]interface{}{
-		"user": profile,
-	}
-
-	// Include role-specific profile details
-	if profile.Role != nil {
-		switch *profile.Role {
-		case "doctor":
-			resp["doctor_profile"] = profile.DoctorProfile
-		case "patient":
-			resp["patient_profile"] = profile.PatientProfile
-		}
-	}
-
-	return response.SimpleOK(c, http.StatusOK, resp)
+	return response.SimpleOK(c, http.StatusOK, profile)
 }

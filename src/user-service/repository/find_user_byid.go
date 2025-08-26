@@ -15,7 +15,7 @@ func (u *userRepoImpl) FindUserByID(
 	var findQuery = u.DB.Executor.WithContext(ctx).
 		Where("id = ?", ID)
 
-	if err := findQuery.Find(&userEntity).Error; err != nil {
+	if err := findQuery.First(&userEntity).Error; err != nil {
 		return nil, err
 	}
 

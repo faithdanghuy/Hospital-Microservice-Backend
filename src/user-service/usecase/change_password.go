@@ -22,12 +22,12 @@ func (u changePasswordUseCaseImpl) Execute(ctx context.Context, userID, oldPwd, 
 
 	user, err := u.userRepo.FindUserByID(ctx, userID)
 	if err != nil {
-		log.Error("user not found", zap.Error(err))
+		log.Error("User Not Found", zap.Error(err))
 		return err
 	}
 
 	if !security.VerifyPassword(oldPwd, *user.Password) {
-		return errors.New("old password is incorrect")
+		return errors.New("Old Password Is Incorrect")
 	}
 
 	hashPwd, err := security.HashPassword(newPwd)

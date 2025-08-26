@@ -3,7 +3,6 @@ package usecase
 import (
 	"context"
 	"fmt"
-	"strings"
 
 	"github.com/Hospital-Microservice/hospital-core/log"
 	"github.com/Hospital-Microservice/hospital-core/security"
@@ -33,22 +32,6 @@ func (r registerUseCaseImpl) Execute(ctx context.Context, user *entity.UserEntit
 	if err := r.UserRepo.InsertUser(ctx, user); err != nil {
 		log.Error("failed to register user", zap.Error(err))
 		return err
-	}
-
-	switch strings.ToLower(*user.Role) {
-	case "patient":
-		if err := r.UserRepo.CreateEmptyPatientProfile(ctx, user.ID); err != nil {
-			log.Error("failed to create empty patient profile", zap.Error(err))
-			return err
-		}
-	case "doctor":
-		if err := r.UserRepo.CreateEmptyDoctorProfile(ctx, user.ID); err != nil {
-			log.Error("failed to create empty doctor profile", zap.Error(err))
-			return err
-		}
-	case "admin":
-	default:
-		log.Warn("unknown role, skipping profile creation", zap.String("role", *user.Role))
 	}
 	return nil
 }

@@ -22,6 +22,8 @@ definitions:
     type: object
   req.UserRegReq:
     properties:
+      address:
+        type: string
       avatar:
         type: string
       birthday:
@@ -29,6 +31,11 @@ definitions:
       email:
         type: string
       full_name:
+        type: string
+      gender:
+        enum:
+        - male
+        - female
         type: string
       phone:
         type: string
@@ -39,9 +46,11 @@ definitions:
         - admin
         type: string
     required:
+    - address
     - birthday
     - email
     - full_name
+    - gender
     - phone
     - role
     type: object
@@ -118,6 +127,44 @@ info:
   title: Hospital Microservice API
   version: "1.0"
 paths:
+  /account/delete/{id}:
+    delete:
+      description: Soft delete a user by ID (flag as deleted, not permanent)
+      parameters:
+      - description: User ID
+        in: path
+        name: user-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ResErr'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ResErr'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.ResErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ResErr'
+      security:
+      - BearerAuth: []
+      summary: Delete user (admin only)
+      tags:
+      - account
   /account/detail/{id}:
     get:
       consumes:
@@ -162,6 +209,52 @@ paths:
       summary: Get user detail
       tags:
       - account
+  /account/edit/{id}:
+    patch:
+      consumes:
+      - application/json
+      description: Update user data by admin
+      parameters:
+      - description: User ID
+        in: path
+        name: user-id
+        required: true
+        type: string
+      - description: Update Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/req.UserUpdateReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ResErr'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ResErr'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.ResErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ResErr'
+      security:
+      - BearerAuth: []
+      summary: Edit any user (Admin only)
+      tags:
+      - account
   /account/filter:
     get:
       consumes:
@@ -179,6 +272,10 @@ paths:
       - description: Sort
         in: query
         name: sort
+        type: string
+      - description: Role filter (admin|doctor|patient)
+        in: query
+        name: role
         type: string
       produces:
       - application/json

@@ -7,13 +7,17 @@ import (
 	"github.com/Hospital-Microservice/user-service/entity"
 )
 
-func (u *userRepoImpl) FilterUsers(ctx context.Context, pagination *record.Pagination) (*record.Pagination, error) {
+func (u *userRepoImpl) FilterUsers(ctx context.Context, pagination *record.Pagination, role string) (*record.Pagination, error) {
 	var users []entity.UserEntity
 	var totalRows int64
 
-	if err := u.DB.Executor.WithContext(ctx).
-		Model(&entity.UserEntity{}).
-		Count(&totalRows).Error; err != nil {
+	query := u.DB.Executor.WithContext(ctx).Model(&entity.UserEntity{})
+
+	if role != "" {
+		query = query.Where("role = ?", role)
+	}
+
+	if err := query.Count(&totalRows).Error; err != nil {
 		return nil, err
 	}
 
@@ -21,7 +25,7 @@ func (u *userRepoImpl) FilterUsers(ctx context.Context, pagination *record.Pagin
 	limit := pagination.GetLimit()
 	sort := pagination.GetSort()
 
-	if err := u.DB.Executor.WithContext(ctx).
+	if err := query.
 		Order(sort).
 		Limit(limit).
 		Offset(offset).

@@ -57,6 +57,8 @@ func Run(confPath string) {
 			ChangePwdUseCase:   usecase.NewChangePasswordUseCase(userRepo),
 			FilterUsersUseCase: usecase.NewFilterUsersUseCase(userRepo),
 			UserDetailUseCase:  usecase.NewUserDetailUseCase(userRepo),
+			EditUserUseCase:    usecase.NewEditUserUseCase(userRepo),
+			DeleteUserUseCase:  usecase.NewDeleteUserUseCase(userRepo),
 		})
 		routes = Routes(userHandler)
 		server = NewServer(serviceConf, routes)

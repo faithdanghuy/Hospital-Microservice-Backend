@@ -13,11 +13,10 @@ type UserEntity struct {
 	Phone    *string `gorm:"unique"`
 	Password *string `gorm:"not null"`
 	Avatar   *string
+	Gender   *string
+	Address  *string
 	Birthday time.Time
 	Role     *string `gorm:"type:text;check:role IN ('patient','doctor','admin');default:'patient'"`
-
-	PatientProfile *PatientProfileEntity `gorm:"foreignKey:UserID;references:ID"`
-	DoctorProfile  *DoctorProfileEntity  `gorm:"foreignKey:UserID;references:ID"`
 }
 
 func (u UserEntity) TableName() string {

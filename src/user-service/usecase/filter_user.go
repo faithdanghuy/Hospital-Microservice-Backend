@@ -8,15 +8,15 @@ import (
 )
 
 type FilterUsersUseCase interface {
-	Execute(ctx context.Context, pagination *record.Pagination) (*record.Pagination, error)
+	Execute(ctx context.Context, pagination *record.Pagination, role string) (*record.Pagination, error)
 }
 
 type filterUsersUseCaseImpl struct {
 	userRepo repository.UserRepo
 }
 
-func (u filterUsersUseCaseImpl) Execute(ctx context.Context, pagination *record.Pagination) (*record.Pagination, error) {
-	return u.userRepo.FilterUsers(ctx, pagination)
+func (u filterUsersUseCaseImpl) Execute(ctx context.Context, pagination *record.Pagination, role string) (*record.Pagination, error) {
+	return u.userRepo.FilterUsers(ctx, pagination, role)
 }
 
 func NewFilterUsersUseCase(userRepo repository.UserRepo) FilterUsersUseCase {
