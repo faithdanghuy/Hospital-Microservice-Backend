@@ -5,6 +5,7 @@ import (
 
 	token "github.com/Hospital-Microservice/hospital-core/model"
 	"github.com/Hospital-Microservice/hospital-core/transport/http/response"
+	"github.com/Hospital-Microservice/user-service/mapper"
 	"github.com/labstack/echo/v4"
 )
 
@@ -63,5 +64,7 @@ func (u *userHandlerImpl) HandleUserDetail(c echo.Context) error {
 
 	profile.Password = nil
 
-	return response.SimpleOK(c, http.StatusOK, profile)
+	resUsers := mapper.TransformUserEntityToFilterRes(profile)
+
+	return response.SimpleOK(c, http.StatusOK, resUsers)
 }
