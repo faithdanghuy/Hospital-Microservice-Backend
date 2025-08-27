@@ -88,11 +88,17 @@ func Routes(handler handler.UserHandler) []route.GroupRoute {
 					Path:    "/doctors",
 					Method:  method.GET,
 					Handler: handler.HandleGetDoctors,
+					Middlewares: []echo.MiddlewareFunc{
+						middleware.JWT(),
+					},
 				},
 				{
 					Path:    "/patients",
 					Method:  method.GET,
 					Handler: handler.HandleGetPatients,
+					Middlewares: []echo.MiddlewareFunc{
+						middleware.JWT(),
+					},
 				},
 				{
 					Path:    "/batch",

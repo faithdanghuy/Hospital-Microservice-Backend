@@ -6,6 +6,7 @@ import (
 	"github.com/Hospital-Microservice/appointment-service/entity"
 	"github.com/Hospital-Microservice/appointment-service/repository"
 	"github.com/Hospital-Microservice/hospital-core/log"
+	"github.com/Hospital-Microservice/hospital-core/pointer"
 	"go.uber.org/zap"
 )
 
@@ -19,6 +20,7 @@ type appointmentCreateUseCaseImpl struct {
 
 func (r appointmentCreateUseCaseImpl) Execute(ctx context.Context, appointment *entity.AppointmentEntity) error {
 
+	appointment.Status = pointer.String("pending")
 	if err := r.appointmentRepo.InsertAppointment(ctx, appointment); err != nil {
 		log.Error("failed to insert appointment", zap.Error(err))
 		return err

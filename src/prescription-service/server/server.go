@@ -1,6 +1,8 @@
 package server
 
 import (
+	"time"
+
 	"github.com/Hospital-Microservice/hospital-core/config"
 	. "github.com/Hospital-Microservice/hospital-core/transport/http"
 	"github.com/Hospital-Microservice/hospital-core/transport/http/engine"
@@ -13,6 +15,7 @@ import (
 	"github.com/Hospital-Microservice/prescription-service/usecase"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/spf13/viper"
 
 	echoSwagger "github.com/swaggo/echo-swagger"
 )
@@ -46,12 +49,18 @@ func Run(confPath string) {
 	var serviceConf model.ServiceConfig
 	config.MustLoadConfig(confPath, &serviceConf)
 
+	userServiceURL := viper.GetString("USER_SERVICE_URL")
+	if userServiceURL == "" {
+		userServiceURL = "http://user-service:3000"
+	}
+	userClient := provider.NewHttpUserService(userServiceURL, 5*time.Second)
 	var (
 		appProvider         = provider.NewAppProvider(serviceConf)
 		prescriptionRepo    = repository.NewPrescriptionRepo(appProvider.Postgres)
 		prescriptionHandler = handler.NewPrescriptionHandler(handler.PrescriptionHandlerInject{
 			PrescriptionDetailUseCase: usecase.NewPrescriptionDetailUseCase(prescriptionRepo),
 			PrescriptionCreateUseCase: usecase.NewPrescriptionCreateUseCase(prescriptionRepo),
+			UserService:               userClient,
 		})
 		routes = Routes(prescriptionHandler)
 		server = NewServer(serviceConf, routes)

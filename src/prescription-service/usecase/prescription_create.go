@@ -17,19 +17,16 @@ type prescriptionCreateUseCaseImpl struct {
 	prescriptionRepo repository.PrescriptionRepo
 }
 
-func (r prescriptionCreateUseCaseImpl) Execute(ctx context.Context, prescription *entity.PrescriptionEntity) error {
+func NewPrescriptionCreateUseCase(repo repository.PrescriptionRepo) PrescriptionCreateUseCase {
+	return &prescriptionCreateUseCaseImpl{
+		prescriptionRepo: repo,
+	}
+}
 
+func (r *prescriptionCreateUseCaseImpl) Execute(ctx context.Context, prescription *entity.PrescriptionEntity) error {
 	if err := r.prescriptionRepo.InsertPrescription(ctx, prescription); err != nil {
-		log.Error("failed to insert prescription", zap.Error(err))
+		log.Error("Failed To Insert Prescription", zap.Error(err))
 		return err
 	}
 	return nil
-}
-
-func NewPrescriptionCreateUseCase(
-	PrescriptionRepo repository.PrescriptionRepo,
-) PrescriptionCreateUseCase {
-	return &prescriptionCreateUseCaseImpl{
-		prescriptionRepo: PrescriptionRepo,
-	}
 }

@@ -6,6 +6,8 @@ import (
 	token "github.com/Hospital-Microservice/hospital-core/model"
 	"github.com/Hospital-Microservice/hospital-core/record"
 	"github.com/Hospital-Microservice/hospital-core/transport/http/response"
+	"github.com/Hospital-Microservice/user-service/entity"
+	"github.com/Hospital-Microservice/user-service/mapper"
 	"github.com/labstack/echo/v4"
 )
 
@@ -35,6 +37,7 @@ func (u *userHandlerImpl) HandleGetPatients(c echo.Context) error {
 		return response.Error(c, http.StatusUnauthorized, "Invalid Token")
 	}
 	p := new(record.Pagination)
+	p.Limit = 999
 	if err := c.Bind(p); err != nil {
 		return response.Error(c, http.StatusBadRequest, err.Error())
 	}
@@ -43,6 +46,24 @@ func (u *userHandlerImpl) HandleGetPatients(c echo.Context) error {
 	if err != nil {
 		return response.Error(c, http.StatusInternalServerError, err.Error())
 	}
+
+	var users []entity.UserEntity
+	switch rows := result.Rows.(type) {
+	case []entity.UserEntity:
+		users = rows
+	case []*entity.UserEntity:
+		for _, u := range rows {
+			if u != nil {
+				users = append(users, *u)
+			}
+		}
+	default:
+		return response.Error(c, http.StatusInternalServerError, "Invalid result type")
+	}
+
+	resMapper := mapper.TransformUserEntitiesToRes(users)
+
+	result.Rows = resMapper
 
 	return response.OK(c, http.StatusOK, "Success", result)
 }

@@ -314,13 +314,9 @@ const docTemplate = `{
             "required": [
                 "doctor_id",
                 "patient_id",
-                "scheduled_at",
-                "status"
+                "scheduled_at"
             ],
             "properties": {
-                "confirmed_at": {
-                    "type": "string"
-                },
                 "doctor_id": {
                     "type": "string"
                 },
@@ -332,27 +328,13 @@ const docTemplate = `{
                 },
                 "scheduled_at": {
                     "type": "string"
-                },
-                "status": {
-                    "type": "string",
-                    "enum": [
-                        "pending",
-                        "confirmed",
-                        "cancelled"
-                    ]
                 }
             }
         },
         "req.AppointmentEditReq": {
             "type": "object",
             "properties": {
-                "doctor_id": {
-                    "type": "string"
-                },
                 "note": {
-                    "type": "string"
-                },
-                "patient_id": {
                     "type": "string"
                 },
                 "scheduled_at": {

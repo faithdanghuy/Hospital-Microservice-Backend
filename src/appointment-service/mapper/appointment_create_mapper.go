@@ -18,7 +18,6 @@ func TransformAppointmentCreateReqToEntity(req req.AppointmentCreateReq) *entity
 		PatientID:   pointer.String(req.PatientID),
 		DoctorID:    pointer.String(req.DoctorID),
 		ScheduledAt: time.Now(),
-		Status:      pointer.String(req.Status),
 		Note:        pointer.String(req.Note),
 		ConfirmedAt: nil,
 	}

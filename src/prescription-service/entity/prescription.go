@@ -1,21 +1,16 @@
 package entity
 
 import (
-	"time"
-
 	"github.com/Hospital-Microservice/hospital-core/record"
 )
 
 type PrescriptionEntity struct {
 	record.BaseEntity
-	PatientID     *string   `gorm:"not null"`
-	DoctorID      *string   `gorm:"not null"`
-	AppointmentID *string   `gorm:"not null"`
-	DrugName      *string   `gorm:"not null"`
-	Dosage        *string   `gorm:"not null"`
-	Instruction   *string   `gorm:"type:text"`
-	Status        *string   `gorm:"default:'not_collected'"`
-	IssuedAt      time.Time `gorm:"autoCreateTime"`
+	PatientID *string `gorm:"not null"`
+	DoctorID  *string `gorm:"not null"`
+	Status    *string `gorm:"default:'not_collected'; check:status IN ('not_collected','collected');index"`
+
+	Medications []*PrescMedEntity `gorm:"foreignKey:PrescriptionID;references:ID"`
 }
 
 func (PrescriptionEntity) TableName() string {

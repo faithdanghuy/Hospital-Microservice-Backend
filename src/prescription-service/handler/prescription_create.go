@@ -23,22 +23,17 @@ import (
 // @Router       /prescription-service/prescriptions [post]
 func (u *prescriptionHandlerImpl) HandlePrescriptionCreate(c echo.Context) error {
 	var prescription req.PrescriptionCreateReq
-	err := c.Bind(&prescription)
-	if err != nil {
+	if err := c.Bind(&prescription); err != nil {
 		return response.Error(c, http.StatusBadRequest, err.Error())
 	}
 
-	var validate = validator.New(validator.WithRequiredStructEnabled())
+	validate := validator.New(validator.WithRequiredStructEnabled())
 	if err := validate.Struct(&prescription); err != nil {
 		return response.Errors(c, http.StatusBadRequest, err)
 	}
 
-	err = u.prescriptionCreateUseCase.Execute(
-		c.Request().Context(),
-		mapper.TransformPrescriptionCreateReqToEntity(prescription),
-	)
-
-	if err != nil {
+	entity := mapper.TransformPrescriptionCreateReqToEntity(prescription)
+	if err := u.prescriptionCreateUseCase.Execute(c.Request().Context(), entity); err != nil {
 		return response.Error(c, http.StatusInternalServerError, err.Error())
 	}
 
