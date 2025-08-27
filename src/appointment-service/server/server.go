@@ -1,6 +1,8 @@
 package server
 
 import (
+	"time"
+
 	"github.com/Hospital-Microservice/appointment-service/handler"
 	"github.com/Hospital-Microservice/appointment-service/migration"
 	"github.com/Hospital-Microservice/appointment-service/model"
@@ -13,6 +15,7 @@ import (
 	"github.com/Hospital-Microservice/hospital-core/transport/http/route"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/spf13/viper"
 
 	echoSwagger "github.com/swaggo/echo-swagger"
 )
@@ -45,7 +48,11 @@ func NewServer(serviceConf model.ServiceConfig, routes []route.GroupRoute) *Serv
 func Run(confPath string) {
 	var serviceConf model.ServiceConfig
 	config.MustLoadConfig(confPath, &serviceConf)
-
+	userServiceURL := viper.GetString("USER_SERVICE_URL")
+	if userServiceURL == "" {
+		userServiceURL = "http://user-service:3000"
+	}
+	userClient := provider.NewHttpUserService(userServiceURL, 5*time.Second)
 	var (
 		appProvider        = provider.NewAppProvider(serviceConf)
 		appointmentRepo    = repository.NewAppointmentRepo(appProvider.Postgres)
@@ -54,6 +61,7 @@ func Run(confPath string) {
 			AppointmentCreateUseCase:       usecase.NewAppointmentCreateUseCase(appointmentRepo),
 			AppointmentChangeStatusUseCase: usecase.NewAppointmentChangeStatusUseCase(appointmentRepo),
 			AppointmentFilterUseCase:       usecase.NewAppointmentFilterUseCase(appointmentRepo),
+			UserService:                    userClient,
 		})
 		routes = Routes(appointmentHandler)
 		server = NewServer(serviceConf, routes)

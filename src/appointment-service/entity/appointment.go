@@ -11,7 +11,7 @@ type AppointmentEntity struct {
 	PatientID   *string    `gorm:"not null"`
 	DoctorID    *string    `gorm:"not null"`
 	ScheduledAt time.Time  `gorm:"not null"`
-	Status      *string    `gorm:"default:'pending'"`
+	Status      *string    `gorm:"type:text;check:status IN ('pending','confirmed','cancelled');default:'pending';index"`
 	Note        *string    `gorm:"type:text"`
 	ConfirmedAt *time.Time `gorm:""`
 }

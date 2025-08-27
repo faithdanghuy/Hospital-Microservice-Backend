@@ -20,16 +20,16 @@ import (
 // @Success      200  {object}  response.ResOk
 // @Failure      404  {object}  response.ResErr
 // @Security     BearerAuth
-// @Router       /appointment-service/appointments/{id}/status [patch]
+// @Router       /appointment/change-status/{id} [patch]
 func (u *appointmentHandlerImpl) HandleAppointmentChangeStatus(c echo.Context) error {
 	id := c.Param("id")
 	if id == "" {
-		return response.Error(c, http.StatusBadRequest, "missing appointment id in path")
+		return response.Error(c, http.StatusBadRequest, "Missing Appointment ID")
 	}
 
 	var req req.AppointmentChangeStatusReq
 	if err := c.Bind(&req); err != nil {
-		return response.Error(c, http.StatusBadRequest, "invalid request body")
+		return response.Error(c, http.StatusBadRequest, "Invalid Request Body")
 	}
 
 	appointmentEntity := mapper.TransformAppointmentChangeStatusReqToEntity(&req)
@@ -48,5 +48,5 @@ func (u *appointmentHandlerImpl) HandleAppointmentChangeStatus(c echo.Context) e
 	appointmentRes := mapper.TransformAppointmentEntityToRes(updatedEntity)
 	appointmentRes.ID = *updatedEntity.ID
 
-	return response.OK(c, http.StatusOK, "appointment status changed successfully", appointmentRes)
+	return response.OK(c, http.StatusOK, "Success", appointmentRes)
 }

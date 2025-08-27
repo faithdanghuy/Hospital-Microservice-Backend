@@ -19,11 +19,15 @@ type updateUseCaseImpl struct {
 }
 
 func (u updateUseCaseImpl) Execute(ctx context.Context, user *entity.UserEntity) error {
-	hashPwd, err := security.HashPassword(*user.Password)
-	if err != nil {
-		log.Error("failed to hash password", zap.Error(err))
+
+	if user.Password != nil {
+		hashPwd, err := security.HashPassword(*user.Password)
+		if err != nil {
+			log.Error("failed to hash password", zap.Error(err))
+			return err
+		}
+		user.Password = &hashPwd
 	}
-	user.Password = &hashPwd
 	if err := u.userRepo.UpdateUser(ctx, *user); err != nil {
 		log.Error("failed to update user", zap.Error(err))
 		return err

@@ -16,7 +16,7 @@ type UserEntity struct {
 	Gender   *string
 	Address  *string
 	Birthday time.Time
-	Role     *string `gorm:"type:text;check:role IN ('patient','doctor','admin');default:'patient'"`
+	Role     *string `gorm:"type:text;check:role IN ('patient','doctor','admin');default:'patient';index"`
 }
 
 func (u UserEntity) TableName() string {

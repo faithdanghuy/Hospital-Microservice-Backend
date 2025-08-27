@@ -1,8 +1,6 @@
 package mapper
 
 import (
-	"time"
-
 	"github.com/Hospital-Microservice/hospital-core/pointer"
 	"github.com/Hospital-Microservice/hospital-core/record"
 	"github.com/Hospital-Microservice/user-service/entity"
@@ -16,9 +14,9 @@ func TransformUpdateReqToEntity(id string, req req.UserUpdateReq) *entity.UserEn
 		},
 		FullName: pointer.String(req.FullName),
 		Email:    pointer.String(req.Email),
-		Phone:    pointer.String(req.Phone),
-		Password: pointer.String(req.Password),
 		Avatar:   pointer.String(req.Avatar),
-		Birthday: time.Now(),
+		Birthday: req.Birthday,
+		Gender:   pointer.String(req.Gender),
+		Address:  pointer.String(req.Address),
 	}
 }

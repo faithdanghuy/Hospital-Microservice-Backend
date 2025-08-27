@@ -35,39 +35,69 @@ func Routes(handler handler.UserHandler) []route.GroupRoute {
 		},
 		{
 			Prefix: "/account",
-			Middlewares: []echo.MiddlewareFunc{
-				middleware.JWT(),
-			},
 			Routes: []route.Route{
 				{
 					Path:    "/profile",
 					Method:  method.GET,
 					Handler: handler.HandleProfile,
+					Middlewares: []echo.MiddlewareFunc{
+						middleware.JWT(),
+					},
 				},
 				{
 					Path:    "/update",
 					Method:  method.PATCH,
 					Handler: handler.HandleUpdate,
+					Middlewares: []echo.MiddlewareFunc{
+						middleware.JWT(),
+					},
 				},
 				{
 					Path:    "/filter",
 					Method:  method.GET,
 					Handler: handler.HandleFilterUsers,
+					Middlewares: []echo.MiddlewareFunc{
+						middleware.JWT(),
+					},
 				},
 				{
 					Path:    "/detail/:id",
 					Method:  method.GET,
 					Handler: handler.HandleUserDetail,
+					Middlewares: []echo.MiddlewareFunc{
+						middleware.JWT(),
+					},
 				},
 				{
 					Path:    "/edit/:id",
 					Method:  method.PATCH,
 					Handler: handler.HandleEditUser,
+					Middlewares: []echo.MiddlewareFunc{
+						middleware.JWT(),
+					},
 				},
 				{
 					Path:    "/delete/:id",
 					Method:  method.DELETE,
 					Handler: handler.HandleDeleteUser,
+					Middlewares: []echo.MiddlewareFunc{
+						middleware.JWT(),
+					},
+				},
+				{
+					Path:    "/doctors",
+					Method:  method.GET,
+					Handler: handler.HandleGetDoctors,
+				},
+				{
+					Path:    "/patients",
+					Method:  method.GET,
+					Handler: handler.HandleGetPatients,
+				},
+				{
+					Path:    "/batch",
+					Method:  method.POST,
+					Handler: handler.HandleAccountBatch,
 				},
 			},
 		},

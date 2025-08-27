@@ -20,7 +20,7 @@ import (
 // @Success      201   {object}  response.ResOk
 // @Failure      400   {object}  response.ResErr
 // @Security     BearerAuth
-// @Router       /appointment-service/appointments [post]
+// @Router       /appointment/create [post]
 func (u *appointmentHandlerImpl) HandleAppointmentCreate(c echo.Context) error {
 	var appointment req.AppointmentCreateReq
 	err := c.Bind(&appointment)

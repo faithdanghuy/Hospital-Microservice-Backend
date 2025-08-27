@@ -4,12 +4,13 @@ import (
 	"context"
 	"time"
 
-	"github.com/Hospital-Microservice/appointment-service/entity"
+	"github.com/Hospital-Microservice/appointment-service/model/req"
 	"github.com/Hospital-Microservice/appointment-service/repository"
+	"github.com/Hospital-Microservice/hospital-core/record"
 )
 
 type AppointmentFilterUseCase interface {
-	Execute(ctx context.Context, filter *entity.AppointmentEntity, fromDateStr, toDateStr string) ([]*entity.AppointmentEntity, error)
+	Execute(ctx context.Context, pagination *record.Pagination, filter req.AppointmentFilterReq) (*record.Pagination, error)
 }
 
 type appointmentFilterUseCaseImpl struct {
@@ -18,23 +19,23 @@ type appointmentFilterUseCaseImpl struct {
 
 func (u *appointmentFilterUseCaseImpl) Execute(
 	ctx context.Context,
-	filter *entity.AppointmentEntity,
-	fromDateStr, toDateStr string,
-) ([]*entity.AppointmentEntity, error) {
+	pagination *record.Pagination,
+	filter req.AppointmentFilterReq,
+) (*record.Pagination, error) {
 	var fromDate, toDate *time.Time
 
-	if fromDateStr != "" {
-		if t, err := time.Parse("2006-01-02", fromDateStr); err == nil {
+	if filter.FromDate != "" {
+		if t, err := time.Parse("2006-01-02", filter.FromDate); err == nil {
 			fromDate = &t
 		}
 	}
-	if toDateStr != "" {
-		if t, err := time.Parse("2006-01-02", toDateStr); err == nil {
+	if filter.ToDate != "" {
+		if t, err := time.Parse("2006-01-02", filter.ToDate); err == nil {
 			toDate = &t
 		}
 	}
 
-	return u.appointmentRepo.FilterAppointments(ctx, filter, fromDate, toDate)
+	return u.appointmentRepo.FilterAppointments(ctx, pagination, filter, fromDate, toDate)
 }
 
 func NewAppointmentFilterUseCase(repo repository.AppointmentRepo) AppointmentFilterUseCase {

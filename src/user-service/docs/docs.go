@@ -34,7 +34,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "User ID",
-                        "name": "user-id",
+                        "name": "id",
                         "in": "path",
                         "required": true
                     }
@@ -142,6 +142,79 @@ const docTemplate = `{
                 }
             }
         },
+        "/account/doctors": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Patients can see available doctors to make appointments",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "account"
+                ],
+                "summary": "Get doctors with pagination",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort",
+                        "name": "sort",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResErr"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResErr"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResErr"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResErr"
+                        }
+                    }
+                }
+            }
+        },
         "/account/edit/{id}": {
             "patch": {
                 "security": [
@@ -164,7 +237,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "User ID",
-                        "name": "user-id",
+                        "name": "id",
                         "in": "path",
                         "required": true
                     },
@@ -254,6 +327,79 @@ const docTemplate = `{
                         "type": "string",
                         "description": "Role filter (admin|doctor|patient)",
                         "name": "role",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResErr"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResErr"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResErr"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResErr"
+                        }
+                    }
+                }
+            }
+        },
+        "/account/patients": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Doctors can see patients to make appointments",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "account"
+                ],
+                "summary": "Get patients with pagination",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort",
+                        "name": "sort",
                         "in": "query"
                     }
                 ],
@@ -617,14 +763,17 @@ const docTemplate = `{
         "req.UserUpdateReq": {
             "type": "object",
             "required": [
+                "address",
                 "avatar",
                 "birthday",
                 "email",
                 "full_name",
-                "password",
-                "phone"
+                "gender"
             ],
             "properties": {
+                "address": {
+                    "type": "string"
+                },
                 "avatar": {
                     "type": "string"
                 },
@@ -637,10 +786,7 @@ const docTemplate = `{
                 "full_name": {
                     "type": "string"
                 },
-                "password": {
-                    "type": "string"
-                },
-                "phone": {
+                "gender": {
                     "type": "string"
                 }
             }
@@ -649,6 +795,9 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "access_token": {
+                    "type": "string"
+                },
+                "address": {
                     "type": "string"
                 },
                 "avatar": {
@@ -664,6 +813,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "full_name": {
+                    "type": "string"
+                },
+                "gender": {
                     "type": "string"
                 },
                 "id": {

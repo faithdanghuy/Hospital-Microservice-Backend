@@ -6,6 +6,8 @@ import (
 	token "github.com/Hospital-Microservice/hospital-core/model"
 	"github.com/Hospital-Microservice/hospital-core/record"
 	"github.com/Hospital-Microservice/hospital-core/transport/http/response"
+	"github.com/Hospital-Microservice/user-service/entity"
+	"github.com/Hospital-Microservice/user-service/mapper"
 	"github.com/labstack/echo/v4"
 )
 
@@ -50,6 +52,12 @@ func (u *userHandlerImpl) HandleFilterUsers(c echo.Context) error {
 	if err != nil {
 		return response.Error(c, http.StatusInternalServerError, err.Error())
 	}
+	users, ok := result.Rows.([]entity.UserEntity)
+	if !ok {
+		return response.Error(c, http.StatusInternalServerError, "invalid result type")
+	}
 
+	resUsers := mapper.TransformUserEntitiesToRes(users)
+	result.Rows = resUsers
 	return response.OK(c, http.StatusOK, "Success", result)
 }

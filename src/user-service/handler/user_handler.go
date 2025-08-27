@@ -11,10 +11,13 @@ type UserHandler interface {
 	HandleProfile(c echo.Context) error
 	HandleUpdate(c echo.Context) error
 	HandleChangePassword(c echo.Context) error
+	HandleAccountBatch(c echo.Context) error
 	HandleFilterUsers(c echo.Context) error
 	HandleUserDetail(c echo.Context) error
 	HandleEditUser(c echo.Context) error
 	HandleDeleteUser(c echo.Context) error
+	HandleGetDoctors(c echo.Context) error
+	HandleGetPatients(c echo.Context) error
 }
 
 type userHandlerImpl struct {
@@ -27,6 +30,9 @@ type userHandlerImpl struct {
 	userDetailUseCase  usecase.UserDetailUseCase
 	editUserUseCase    usecase.EditUserUseCase
 	deleteUserUseCase  usecase.DeleteUserUseCase
+	getDoctorsUseCase  usecase.FilterUsersUseCase
+	getPatientsUseCase usecase.FilterUsersUseCase
+	getBatchUseCase    usecase.BatchUserDetailUseCase
 }
 
 type UserHandlerInject struct {
@@ -39,6 +45,9 @@ type UserHandlerInject struct {
 	UserDetailUseCase  usecase.UserDetailUseCase
 	EditUserUseCase    usecase.EditUserUseCase
 	DeleteUserUseCase  usecase.DeleteUserUseCase
+	GetDoctorsUseCase  usecase.FilterUsersUseCase
+	GetPatientsUseCase usecase.FilterUsersUseCase
+	GetBatchUseCase    usecase.BatchUserDetailUseCase
 }
 
 func NewUserHandler(inject UserHandlerInject) UserHandler {
@@ -52,5 +61,8 @@ func NewUserHandler(inject UserHandlerInject) UserHandler {
 		userDetailUseCase:  inject.UserDetailUseCase,
 		editUserUseCase:    inject.EditUserUseCase,
 		deleteUserUseCase:  inject.DeleteUserUseCase,
+		getDoctorsUseCase:  inject.GetDoctorsUseCase,
+		getPatientsUseCase: inject.GetPatientsUseCase,
+		getBatchUseCase:    inject.GetBatchUseCase,
 	}
 }

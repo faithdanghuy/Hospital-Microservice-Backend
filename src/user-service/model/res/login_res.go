@@ -10,6 +10,8 @@ type LoginRes struct {
 	Password    string    `json:"password,omitempty"`
 	Avatar      string    `json:"avatar"`
 	Birthday    time.Time `json:"birthday"`
+	Gender      string    `json:"gender"`
+	Address     string    `json:"address"`
 	Role        string    `json:"role"`
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`

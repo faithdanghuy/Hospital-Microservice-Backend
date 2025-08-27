@@ -14,5 +14,7 @@ func TransformUserEntityToRes(userEntity *entity.UserEntity) *res.LoginRes {
 		Avatar:   *userEntity.Avatar,
 		Birthday: userEntity.Birthday,
 		Role:     *userEntity.Role,
+		Gender:   *userEntity.Gender,
+		Address:  *userEntity.Address,
 	}
 }

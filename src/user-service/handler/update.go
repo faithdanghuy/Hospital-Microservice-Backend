@@ -25,6 +25,17 @@ import (
 // @Failure      500  {object}  response.ResErr
 // @Router       /account/update [patch]
 func (u *userHandlerImpl) HandleUpdate(c echo.Context) error {
+
+	userClaims := c.Get("user")
+	if userClaims == nil {
+		return response.Error(c, http.StatusUnauthorized, "Unauthorized")
+	}
+
+	claims, ok := userClaims.(token.JwtCustomClaims)
+	if !ok {
+		return response.Error(c, http.StatusUnauthorized, "Invalid Token")
+	}
+	userID := claims.ID
 	var user req.UserUpdateReq
 	err := c.Bind(&user)
 	if err != nil {
@@ -35,9 +46,6 @@ func (u *userHandlerImpl) HandleUpdate(c echo.Context) error {
 	if err := validate.Struct(&user); err != nil {
 		return response.Errors(c, http.StatusBadRequest, err)
 	}
-
-	claims := c.Get("user").(token.JwtCustomClaims)
-	userID := claims.ID
 
 	err = u.updateUseCase.Execute(
 		c.Request().Context(),

@@ -17,7 +17,7 @@ import (
 // @Tags         account
 // @Accept       json
 // @Produce      json
-// @Param        user-id  path      string             true  "User ID"
+// @Param        id  path      string             true  "User ID"
 // @Param        body     body      req.UserUpdateReq  true  "Update Request"
 // @Security     BearerAuth
 // @Success      200  {object}  map[string]interface{}

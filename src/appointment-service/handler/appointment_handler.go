@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"github.com/Hospital-Microservice/appointment-service/provider"
 	"github.com/Hospital-Microservice/appointment-service/usecase"
 	"github.com/labstack/echo/v4"
 )
@@ -17,6 +18,7 @@ type appointmentHandlerImpl struct {
 	appointmentCreateUseCase       usecase.AppointmentCreateUseCase
 	appointmentChangeStatusUseCase usecase.AppointmentChangeStatusUseCase
 	appointmentFilterUseCase       usecase.AppointmentFilterUseCase
+	UserService                    provider.UserService
 }
 
 type AppointmentHandlerInject struct {
@@ -24,6 +26,7 @@ type AppointmentHandlerInject struct {
 	AppointmentCreateUseCase       usecase.AppointmentCreateUseCase
 	AppointmentChangeStatusUseCase usecase.AppointmentChangeStatusUseCase
 	AppointmentFilterUseCase       usecase.AppointmentFilterUseCase
+	UserService                    provider.UserService
 }
 
 func NewAppointmentHandler(inject AppointmentHandlerInject) AppointmentHandler {
@@ -32,5 +35,6 @@ func NewAppointmentHandler(inject AppointmentHandlerInject) AppointmentHandler {
 		appointmentCreateUseCase:       inject.AppointmentCreateUseCase,
 		appointmentChangeStatusUseCase: inject.AppointmentChangeStatusUseCase,
 		appointmentFilterUseCase:       inject.AppointmentFilterUseCase,
+		UserService:                    inject.UserService,
 	}
 }

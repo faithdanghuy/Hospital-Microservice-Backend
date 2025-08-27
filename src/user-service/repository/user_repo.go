@@ -10,6 +10,7 @@ import (
 )
 
 type UserRepo interface {
+	GetUsersByIDs(ctx context.Context, IDs []string) ([]*entity.UserEntity, error)
 	InsertUser(ctx context.Context, user *entity.UserEntity) error
 	UpdateUser(ctx context.Context, user entity.UserEntity) error
 	FindUserByPhone(ctx context.Context, user entity.UserEntity) (*entity.UserEntity, error)

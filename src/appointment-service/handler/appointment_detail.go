@@ -18,7 +18,7 @@ import (
 // @Success      200  {object}  res.AppointmentDetailRes
 // @Failure      404  {object}  response.ResErr
 // @Security     BearerAuth
-// @Router       /appointment-service/appointments/{id} [get]
+// @Router       /appointment/detail/{id} [get]
 func (u *appointmentHandlerImpl) HandleAppointmentDetail(c echo.Context) error {
 	id := c.Param("id")
 	if id == "" {

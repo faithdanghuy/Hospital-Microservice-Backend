@@ -56,6 +56,8 @@ definitions:
     type: object
   req.UserUpdateReq:
     properties:
+      address:
+        type: string
       avatar:
         type: string
       birthday:
@@ -64,21 +66,21 @@ definitions:
         type: string
       full_name:
         type: string
-      password:
-        type: string
-      phone:
+      gender:
         type: string
     required:
+    - address
     - avatar
     - birthday
     - email
     - full_name
-    - password
-    - phone
+    - gender
     type: object
   res.LoginRes:
     properties:
       access_token:
+        type: string
+      address:
         type: string
       avatar:
         type: string
@@ -89,6 +91,8 @@ definitions:
       email:
         type: string
       full_name:
+        type: string
+      gender:
         type: string
       id:
         type: string
@@ -133,7 +137,7 @@ paths:
       parameters:
       - description: User ID
         in: path
-        name: user-id
+        name: id
         required: true
         type: string
       produces:
@@ -209,6 +213,53 @@ paths:
       summary: Get user detail
       tags:
       - account
+  /account/doctors:
+    get:
+      consumes:
+      - application/json
+      description: Patients can see available doctors to make appointments
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Sort
+        in: query
+        name: sort
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ResErr'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ResErr'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.ResErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ResErr'
+      security:
+      - BearerAuth: []
+      summary: Get doctors with pagination
+      tags:
+      - account
   /account/edit/{id}:
     patch:
       consumes:
@@ -217,7 +268,7 @@ paths:
       parameters:
       - description: User ID
         in: path
-        name: user-id
+        name: id
         required: true
         type: string
       - description: Update Request
@@ -304,6 +355,53 @@ paths:
       security:
       - BearerAuth: []
       summary: Filter users with pagination
+      tags:
+      - account
+  /account/patients:
+    get:
+      consumes:
+      - application/json
+      description: Doctors can see patients to make appointments
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Sort
+        in: query
+        name: sort
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ResErr'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ResErr'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.ResErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ResErr'
+      security:
+      - BearerAuth: []
+      summary: Get patients with pagination
       tags:
       - account
   /account/profile:

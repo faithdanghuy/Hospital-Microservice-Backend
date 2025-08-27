@@ -13,7 +13,7 @@ import (
 // @Description  Soft delete a user by ID (flag as deleted, not permanent)
 // @Tags         account
 // @Produce      json
-// @Param        user-id   path      string  true  "User ID"
+// @Param        id   path      string  true  "User ID"
 // @Security     BearerAuth
 // @Success      200  {object}  map[string]interface{}
 // @Failure      400  {object}  response.ResErr

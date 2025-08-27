@@ -91,7 +91,95 @@ info:
   title: Hospital Microservice API
   version: "1.0"
 paths:
-  /appointment-service/appointments:
+  /appointment/change-status/{id}:
+    patch:
+      consumes:
+      - application/json
+      description: Change the status of an appointment by ID
+      parameters:
+      - description: Appointment ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Appointment Change Status Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/req.AppointmentChangeStatusReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ResOk'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ResErr'
+      security:
+      - BearerAuth: []
+      summary: Change appointment status
+      tags:
+      - appointment
+  /appointment/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a new appointment
+      parameters:
+      - description: Appointment Create Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/req.AppointmentCreateReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.ResOk'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ResErr'
+      security:
+      - BearerAuth: []
+      summary: Create appointment
+      tags:
+      - appointment
+  /appointment/detail/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve details of an appointment by ID
+      parameters:
+      - description: Appointment ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.AppointmentDetailRes'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ResErr'
+      security:
+      - BearerAuth: []
+      summary: Get appointment details
+      tags:
+      - appointment
+  /appointment/filter:
     get:
       consumes:
       - application/json
@@ -126,93 +214,6 @@ paths:
       security:
       - BearerAuth: []
       summary: Get appointments with filters
-      tags:
-      - appointment
-    post:
-      consumes:
-      - application/json
-      description: Create a new appointment
-      parameters:
-      - description: Appointment Create Request
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/req.AppointmentCreateReq'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/response.ResOk'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/response.ResErr'
-      security:
-      - BearerAuth: []
-      summary: Create appointment
-      tags:
-      - appointment
-  /appointment-service/appointments/{id}:
-    get:
-      consumes:
-      - application/json
-      description: Retrieve details of an appointment by ID
-      parameters:
-      - description: Appointment ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/res.AppointmentDetailRes'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/response.ResErr'
-      security:
-      - BearerAuth: []
-      summary: Get appointment details
-      tags:
-      - appointment
-  /appointment-service/appointments/{id}/status:
-    patch:
-      consumes:
-      - application/json
-      description: Change the status of an appointment by ID
-      parameters:
-      - description: Appointment ID
-        in: path
-        name: id
-        required: true
-        type: string
-      - description: Appointment Change Status Request
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/req.AppointmentChangeStatusReq'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.ResOk'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/response.ResErr'
-      security:
-      - BearerAuth: []
-      summary: Change appointment status
       tags:
       - appointment
 securityDefinitions:
