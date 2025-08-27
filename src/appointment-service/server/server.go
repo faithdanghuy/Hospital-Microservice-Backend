@@ -61,6 +61,7 @@ func Run(confPath string) {
 			AppointmentCreateUseCase:       usecase.NewAppointmentCreateUseCase(appointmentRepo),
 			AppointmentChangeStatusUseCase: usecase.NewAppointmentChangeStatusUseCase(appointmentRepo),
 			AppointmentFilterUseCase:       usecase.NewAppointmentFilterUseCase(appointmentRepo),
+			AppointmentEditUseCase:         usecase.NewAppointmentEditUseCase(appointmentRepo),
 			UserService:                    userClient,
 		})
 		routes = Routes(appointmentHandler)

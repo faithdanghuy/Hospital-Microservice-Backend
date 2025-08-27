@@ -155,6 +155,64 @@ const docTemplate = `{
                 }
             }
         },
+        "/appointment/edit/{id}": {
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Edit an appointment by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "appointment"
+                ],
+                "summary": "Edit appointment",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Appointment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Edit Appointment Request",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.AppointmentEditReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResOk"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResErr"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResErr"
+                        }
+                    }
+                }
+            }
+        },
         "/appointment/filter": {
             "get": {
                 "security": [
@@ -215,6 +273,26 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "provider.UserRes": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "full_name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                }
+            }
+        },
         "req.AppointmentChangeStatusReq": {
             "type": "object",
             "required": [
@@ -265,6 +343,26 @@ const docTemplate = `{
                 }
             }
         },
+        "req.AppointmentEditReq": {
+            "type": "object",
+            "properties": {
+                "doctor_id": {
+                    "type": "string"
+                },
+                "note": {
+                    "type": "string"
+                },
+                "patient_id": {
+                    "type": "string"
+                },
+                "scheduled_at": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
         "req.AppointmentFilterReq": {
             "type": "object",
             "properties": {
@@ -291,6 +389,9 @@ const docTemplate = `{
                 "confirmed_at": {
                     "type": "string"
                 },
+                "doctor": {
+                    "$ref": "#/definitions/provider.UserRes"
+                },
                 "doctor_id": {
                     "type": "string"
                 },
@@ -299,6 +400,9 @@ const docTemplate = `{
                 },
                 "note": {
                     "type": "string"
+                },
+                "patient": {
+                    "$ref": "#/definitions/provider.UserRes"
                 },
                 "patient_id": {
                     "type": "string"

@@ -1,5 +1,18 @@
 basePath: /appointment-service
 definitions:
+  provider.UserRes:
+    properties:
+      email:
+        type: string
+      full_name:
+        type: string
+      id:
+        type: string
+      phone:
+        type: string
+      role:
+        type: string
+    type: object
   req.AppointmentChangeStatusReq:
     properties:
       status:
@@ -35,6 +48,19 @@ definitions:
     - scheduled_at
     - status
     type: object
+  req.AppointmentEditReq:
+    properties:
+      doctor_id:
+        type: string
+      note:
+        type: string
+      patient_id:
+        type: string
+      scheduled_at:
+        type: string
+      status:
+        type: string
+    type: object
   req.AppointmentFilterReq:
     properties:
       doctor_id:
@@ -52,12 +78,16 @@ definitions:
     properties:
       confirmed_at:
         type: string
+      doctor:
+        $ref: '#/definitions/provider.UserRes'
       doctor_id:
         type: string
       id:
         type: string
       note:
         type: string
+      patient:
+        $ref: '#/definitions/provider.UserRes'
       patient_id:
         type: string
       scheduled_at:
@@ -177,6 +207,43 @@ paths:
       security:
       - BearerAuth: []
       summary: Get appointment details
+      tags:
+      - appointment
+  /appointment/edit/{id}:
+    patch:
+      consumes:
+      - application/json
+      description: Edit an appointment by ID
+      parameters:
+      - description: Appointment ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Edit Appointment Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/req.AppointmentEditReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ResOk'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ResErr'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ResErr'
+      security:
+      - BearerAuth: []
+      summary: Edit appointment
       tags:
       - appointment
   /appointment/filter:

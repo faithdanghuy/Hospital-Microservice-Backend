@@ -7,8 +7,8 @@ import (
 	"github.com/Hospital-Microservice/hospital-core/record"
 
 	"github.com/Hospital-Microservice/appointment-service/entity"
+	"github.com/Hospital-Microservice/appointment-service/mapper"
 	"github.com/Hospital-Microservice/appointment-service/model/req"
-	"github.com/Hospital-Microservice/appointment-service/model/res"
 	"github.com/Hospital-Microservice/hospital-core/transport/http/response"
 	"github.com/labstack/echo/v4"
 )
@@ -89,31 +89,6 @@ func (u *appointmentHandlerImpl) HandleAppointmentFilter(c echo.Context) error {
 		c.Logger().Errorf("user service error: %v", err)
 	}
 
-	var enriched []res.AppointmentRes
-	for _, appt := range appointments {
-		r := res.AppointmentRes{
-			ID:          *appt.ID,
-			ScheduledAt: appt.ScheduledAt,
-		}
-		if appt.Status != nil {
-			r.Status = *appt.Status
-		}
-		if appt.Note != nil {
-			r.Note = *appt.Note
-		}
-		if appt.PatientID != nil {
-			if u, ok := users[*appt.PatientID]; ok {
-				r.Patient = &u
-			}
-		}
-		if appt.DoctorID != nil {
-			if u, ok := users[*appt.DoctorID]; ok {
-				r.Doctor = &u
-			}
-		}
-		enriched = append(enriched, r)
-	}
-
-	result.Rows = enriched
-	return response.OK(c, http.StatusOK, "success", result)
+	result.Rows = mapper.TransformAppointmentEntitiesToRes(appointments, users)
+	return response.OK(c, http.StatusOK, "Success", result)
 }

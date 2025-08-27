@@ -11,6 +11,7 @@ type AppointmentHandler interface {
 	HandleAppointmentCreate(c echo.Context) error
 	HandleAppointmentChangeStatus(c echo.Context) error
 	HandleAppointmentFilter(c echo.Context) error
+	HandleAppointmentEdit(c echo.Context) error
 }
 
 type appointmentHandlerImpl struct {
@@ -18,6 +19,7 @@ type appointmentHandlerImpl struct {
 	appointmentCreateUseCase       usecase.AppointmentCreateUseCase
 	appointmentChangeStatusUseCase usecase.AppointmentChangeStatusUseCase
 	appointmentFilterUseCase       usecase.AppointmentFilterUseCase
+	appointmentEditUseCase         usecase.AppointmentEditUseCase
 	UserService                    provider.UserService
 }
 
@@ -26,6 +28,7 @@ type AppointmentHandlerInject struct {
 	AppointmentCreateUseCase       usecase.AppointmentCreateUseCase
 	AppointmentChangeStatusUseCase usecase.AppointmentChangeStatusUseCase
 	AppointmentFilterUseCase       usecase.AppointmentFilterUseCase
+	AppointmentEditUseCase         usecase.AppointmentEditUseCase
 	UserService                    provider.UserService
 }
 
@@ -35,6 +38,7 @@ func NewAppointmentHandler(inject AppointmentHandlerInject) AppointmentHandler {
 		appointmentCreateUseCase:       inject.AppointmentCreateUseCase,
 		appointmentChangeStatusUseCase: inject.AppointmentChangeStatusUseCase,
 		appointmentFilterUseCase:       inject.AppointmentFilterUseCase,
+		appointmentEditUseCase:         inject.AppointmentEditUseCase,
 		UserService:                    inject.UserService,
 	}
 }

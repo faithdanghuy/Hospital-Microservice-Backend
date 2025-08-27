@@ -9,37 +9,33 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-// ChangeAppointmentStatus godoc
-// @Summary      Change appointment status
-// @Description  Change the status of an appointment by ID
+// EditAppointment godoc
+// @Summary      Edit appointment
+// @Description  Edit an appointment by ID
 // @Tags         appointment
 // @Accept       json
 // @Produce      json
-// @Param        id   path      string  true  "Appointment ID"
-// @Param        body  body      req.AppointmentChangeStatusReq  true  "Appointment Change Status Request"
-// @Success      200  {object}  response.ResOk
-// @Failure      404  {object}  response.ResErr
+// @Param        id   path      string                 true  "Appointment ID"
+// @Param        body body      req.AppointmentEditReq true  "Edit Appointment Request"
+// @Success      200  {object} response.ResOk
+// @Failure      400  {object} response.ResErr
+// @Failure      404  {object} response.ResErr
 // @Security     BearerAuth
-// @Router       /appointment/change-status/{id} [patch]
-func (u *appointmentHandlerImpl) HandleAppointmentChangeStatus(c echo.Context) error {
+// @Router       /appointment/edit/{id} [patch]
+func (u *appointmentHandlerImpl) HandleAppointmentEdit(c echo.Context) error {
 	id := c.Param("id")
 	if id == "" {
 		return response.Error(c, http.StatusBadRequest, "Missing Appointment ID")
 	}
 
-	var req req.AppointmentChangeStatusReq
+	var req req.AppointmentEditReq
 	if err := c.Bind(&req); err != nil {
-		return response.Error(c, http.StatusBadRequest, "Invalid Request Body")
+		return response.Error(c, http.StatusBadRequest, "Invalid request body")
 	}
 
-	appointmentEntity := mapper.TransformAppointmentChangeStatusReqToEntity(&req)
-	appointmentEntity.ID = &id
+	appointmentEntity := mapper.TransformAppointmentEditReqToEntity(&req)
 
-	updatedEntity, err := u.appointmentChangeStatusUseCase.Execute(
-		c.Request().Context(),
-		id,
-		*appointmentEntity.Status,
-	)
+	updatedEntity, err := u.appointmentEditUseCase.Execute(c.Request().Context(), id, appointmentEntity)
 	if err != nil {
 		return response.Error(c, http.StatusBadRequest, err.Error())
 	}

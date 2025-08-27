@@ -1,5 +1,12 @@
 basePath: /user-service
 definitions:
+  handler.BatchRequest:
+    properties:
+      ids:
+        items:
+          type: string
+        type: array
+    type: object
   req.UserChangePasswordReq:
     properties:
       new_password:
@@ -131,6 +138,41 @@ info:
   title: Hospital Microservice API
   version: "1.0"
 paths:
+  /account/batch:
+    post:
+      consumes:
+      - application/json
+      description: Return list of users for given ids (batch)
+      parameters:
+      - description: IDs
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handler.BatchRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items: {}
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ResErr'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ResErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ResErr'
+      summary: Get multiple user details by ids
+      tags:
+      - account
   /account/delete/{id}:
     delete:
       description: Soft delete a user by ID (flag as deleted, not permanent)

@@ -11,6 +11,9 @@ type AppointmentRes struct {
 	ScheduledAt time.Time         `json:"scheduled_at"`
 	Status      string            `json:"status"`
 	Note        string            `json:"note,omitempty"`
+	PatientID   string            `json:"patient_id"`
 	Patient     *provider.UserRes `json:"patient,omitempty"`
+	DoctorID    string            `json:"doctor_id"`
 	Doctor      *provider.UserRes `json:"doctor,omitempty"`
+	ConfirmedAt *time.Time        `json:"confirmed_at,omitempty"`
 }

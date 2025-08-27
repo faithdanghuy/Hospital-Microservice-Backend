@@ -24,13 +24,26 @@ func (u *appointmentHandlerImpl) HandleAppointmentDetail(c echo.Context) error {
 	if id == "" {
 		return response.Error(c, http.StatusBadRequest, "missing appointment id in path")
 	}
+
 	appointmentEntity, err := u.appointmentDetailUseCase.Execute(c.Request().Context(), id)
 	if err != nil {
 		return response.Error(c, http.StatusBadRequest, err.Error())
 	}
 
-	appointmentDetailRes := mapper.TransformAppointmentEntityToRes(appointmentEntity)
-	appointmentDetailRes.ID = *appointmentEntity.ID
+	var ids []string
+	if appointmentEntity.PatientID != nil {
+		ids = append(ids, *appointmentEntity.PatientID)
+	}
+	if appointmentEntity.DoctorID != nil {
+		ids = append(ids, *appointmentEntity.DoctorID)
+	}
+
+	users, err := u.UserService.GetUsersByIDs(c.Request().Context(), ids, c.Request().Header.Get("Authorization"))
+	if err != nil {
+		c.Logger().Errorf("user service error: %v", err)
+	}
+
+	appointmentDetailRes := mapper.TransformAppointmentEntityToDetailRes(appointmentEntity, users)
 
 	return response.OK(c, http.StatusOK, "OK", appointmentDetailRes)
 }

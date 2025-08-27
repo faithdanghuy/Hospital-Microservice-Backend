@@ -21,11 +21,6 @@ func Routes(handler handler.AppointmentHandler) []route.GroupRoute {
 					Method:  method.POST,
 					Handler: handler.HandleAppointmentCreate,
 				},
-				// {
-				// 	Path:    "/update",
-				// 	Method:  method.PATCH,
-				// 	Handler: handler.HandleRegister,
-				// },
 				{
 					Path:    "/detail/:id",
 					Method:  method.GET,
@@ -40,6 +35,11 @@ func Routes(handler handler.AppointmentHandler) []route.GroupRoute {
 					Path:    "/filter",
 					Method:  method.GET,
 					Handler: handler.HandleAppointmentFilter,
+				},
+				{
+					Path:    "/edit/:id",
+					Method:  method.PATCH,
+					Handler: handler.HandleAppointmentEdit,
 				},
 				// {
 				// 	Path:    "/delete",
