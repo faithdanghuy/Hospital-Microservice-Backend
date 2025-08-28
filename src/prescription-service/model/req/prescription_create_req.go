@@ -5,7 +5,7 @@ import "time"
 type PrescriptionMedReq struct {
 	MedicationID string    `json:"medication_id" validate:"required"`
 	Quantity     *int      `json:"quantity" validate:"required"`
-	Unit         string    `json:"unit" validate:"required"`
+	Dosage       *string   `json:"dosage,omitempty"`
 	Instruction  *string   `json:"instruction,omitempty"`
 	IssuedAt     time.Time `json:"issued_at" validate:"required"`
 }

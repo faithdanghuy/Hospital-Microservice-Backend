@@ -18,7 +18,7 @@ func TransformPrescriptionCreateReqToEntity(req req.PrescriptionCreateReq) *enti
 		meds = append(meds, &entity.PrescMedEntity{
 			MedicationID: pointer.String(m.MedicationID),
 			Quantity:     m.Quantity,
-			Unit:         pointer.String(m.Unit),
+			Dosage:       m.Dosage,
 			Instruction:  m.Instruction,
 			IssuedAt:     m.IssuedAt,
 		})

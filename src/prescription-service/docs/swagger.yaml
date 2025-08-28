@@ -1,30 +1,101 @@
 basePath: /prescription-service
 definitions:
-  req.PrescriptionCreateReq:
+  req.MedicationCreateReq:
     properties:
-      appointment_id:
-        type: string
-      doctor_id:
-        type: string
-      dosage:
+      description:
         type: string
       drug_name:
         type: string
-      instruction:
+      stock:
+        type: integer
+      unit:
+        enum:
+        - tablet
+        - capsule
+        - syrup
+        - injection
+        - ointment
+        - drop
+        - inhaler
+        - patch
+        - suppository
+        - other
         type: string
+    required:
+    - drug_name
+    - stock
+    - unit
+    type: object
+  req.MedicationUpdateReq:
+    properties:
+      description:
+        type: string
+      drug_name:
+        type: string
+      stock:
+        type: integer
+      unit:
+        enum:
+        - tablet
+        - capsule
+        - syrup
+        - injection
+        - ointment
+        - drop
+        - inhaler
+        - patch
+        - suppository
+        - other
+        type: string
+    required:
+    - unit
+    type: object
+  req.PrescriptionCreateReq:
+    properties:
+      doctor_id:
+        type: string
+      medications:
+        items:
+          $ref: '#/definitions/req.PrescriptionMedReq'
+        type: array
       patient_id:
         type: string
       status:
-        enum:
-        - not_collected
-        - collected
         type: string
     required:
-    - appointment_id
     - doctor_id
-    - dosage
-    - drug_name
     - patient_id
+    - status
+    type: object
+  req.PrescriptionMedReq:
+    properties:
+      dosage:
+        type: string
+      instruction:
+        type: string
+      issued_at:
+        type: string
+      medication_id:
+        type: string
+      quantity:
+        type: integer
+    required:
+    - issued_at
+    - medication_id
+    - quantity
+    type: object
+  res.MedicationRes:
+    properties:
+      description:
+        type: string
+      drug_name:
+        type: string
+      id:
+        type: string
+      stock:
+        type: integer
+      unit:
+        type: string
     type: object
   res.PrescriptionDetailRes:
     properties:
@@ -73,7 +144,181 @@ info:
   title: Hospital Microservice API
   version: "1.0"
 paths:
-  /prescription-service/prescriptions:
+  /medication/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a new medication record
+      parameters:
+      - description: Medication Create Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/req.MedicationCreateReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.ResOk'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ResErr'
+      security:
+      - BearerAuth: []
+      summary: Create Medication
+      tags:
+      - medication
+  /medication/delete/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a medication record
+      parameters:
+      - description: Medication ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ResOk'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ResErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ResErr'
+      security:
+      - BearerAuth: []
+      summary: Delete Medication
+      tags:
+      - medication
+  /medication/detail/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Detail a medication record
+      parameters:
+      - description: Medication ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.MedicationRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ResErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ResErr'
+      security:
+      - BearerAuth: []
+      summary: Detail Medication
+      tags:
+      - medication
+  /medication/filter:
+    get:
+      consumes:
+      - application/json
+      description: List all medication records with pagination & filter
+      parameters:
+      - description: Limit per page
+        in: query
+        name: limit
+        type: integer
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Sort (e.g. drug_name asc)
+        in: query
+        name: sort
+        type: string
+      - description: Filter by drug name
+        in: query
+        name: drug_name
+        type: string
+      - description: Filter by unit
+        in: query
+        name: unit
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ResErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ResErr'
+      security:
+      - BearerAuth: []
+      summary: List Medications with pagination & filter
+      tags:
+      - medication
+  /medication/update/{id}:
+    patch:
+      consumes:
+      - application/json
+      description: Update a medication record
+      parameters:
+      - description: Medication ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Medication Update Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/req.MedicationUpdateReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.MedicationRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ResErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ResErr'
+      security:
+      - BearerAuth: []
+      summary: Update Medication
+      tags:
+      - medication
+  /prescription/create:
     post:
       consumes:
       - application/json
@@ -101,7 +346,7 @@ paths:
       summary: Create prescription
       tags:
       - prescription
-  /prescription-service/prescriptions/{id}:
+  /prescription/detail/{id}:
     get:
       consumes:
       - application/json

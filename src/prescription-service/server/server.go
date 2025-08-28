@@ -60,7 +60,13 @@ func Run(confPath string) {
 		prescriptionHandler = handler.NewPrescriptionHandler(handler.PrescriptionHandlerInject{
 			PrescriptionDetailUseCase: usecase.NewPrescriptionDetailUseCase(prescriptionRepo),
 			PrescriptionCreateUseCase: usecase.NewPrescriptionCreateUseCase(prescriptionRepo),
-			UserService:               userClient,
+			DeleteMedicationUseCase:   usecase.NewDeleteMedicationUseCase(prescriptionRepo),
+			CreateMedicationUseCase:   usecase.NewCreateMedicationUseCase(prescriptionRepo),
+			UpdateMedicationUseCase:   usecase.NewUpdateMedicationUseCase(prescriptionRepo),
+			ListMedicationUseCase:     usecase.NewListMedicationUseCase(prescriptionRepo),
+			DetailMedicationUseCase:   usecase.NewDetailMedicationUseCase(prescriptionRepo),
+
+			UserService: userClient,
 		})
 		routes = Routes(prescriptionHandler)
 		server = NewServer(serviceConf, routes)

@@ -15,7 +15,281 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/prescription-service/prescriptions": {
+        "/medication/create": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Create a new medication record",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "medication"
+                ],
+                "summary": "Create Medication",
+                "parameters": [
+                    {
+                        "description": "Medication Create Request",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.MedicationCreateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResOk"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResErr"
+                        }
+                    }
+                }
+            }
+        },
+        "/medication/delete/{id}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Delete a medication record",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "medication"
+                ],
+                "summary": "Delete Medication",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Medication ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResOk"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResErr"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResErr"
+                        }
+                    }
+                }
+            }
+        },
+        "/medication/detail/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Detail a medication record",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "medication"
+                ],
+                "summary": "Detail Medication",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Medication ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/res.MedicationRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResErr"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResErr"
+                        }
+                    }
+                }
+            }
+        },
+        "/medication/filter": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "List all medication records with pagination \u0026 filter",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "medication"
+                ],
+                "summary": "List Medications with pagination \u0026 filter",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Limit per page",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort (e.g. drug_name asc)",
+                        "name": "sort",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter by drug name",
+                        "name": "drug_name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter by unit",
+                        "name": "unit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResErr"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResErr"
+                        }
+                    }
+                }
+            }
+        },
+        "/medication/update/{id}": {
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Update a medication record",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "medication"
+                ],
+                "summary": "Update Medication",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Medication ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Medication Update Request",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.MedicationUpdateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/res.MedicationRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResErr"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResErr"
+                        }
+                    }
+                }
+            }
+        },
+        "/prescription/create": {
             "post": {
                 "security": [
                     {
@@ -60,7 +334,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/prescription-service/prescriptions/{id}": {
+        "/prescription/detail/{id}": {
             "get": {
                 "security": [
                     {
@@ -105,40 +379,139 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "req.PrescriptionCreateReq": {
+        "req.MedicationCreateReq": {
             "type": "object",
             "required": [
-                "appointment_id",
-                "doctor_id",
-                "dosage",
                 "drug_name",
-                "patient_id"
+                "stock",
+                "unit"
             ],
             "properties": {
-                "appointment_id": {
-                    "type": "string"
-                },
-                "doctor_id": {
-                    "type": "string"
-                },
-                "dosage": {
+                "description": {
                     "type": "string"
                 },
                 "drug_name": {
                     "type": "string"
                 },
-                "instruction": {
+                "stock": {
+                    "type": "integer"
+                },
+                "unit": {
+                    "type": "string",
+                    "enum": [
+                        "tablet",
+                        "capsule",
+                        "syrup",
+                        "injection",
+                        "ointment",
+                        "drop",
+                        "inhaler",
+                        "patch",
+                        "suppository",
+                        "other"
+                    ]
+                }
+            }
+        },
+        "req.MedicationUpdateReq": {
+            "type": "object",
+            "required": [
+                "unit"
+            ],
+            "properties": {
+                "description": {
                     "type": "string"
+                },
+                "drug_name": {
+                    "type": "string"
+                },
+                "stock": {
+                    "type": "integer"
+                },
+                "unit": {
+                    "type": "string",
+                    "enum": [
+                        "tablet",
+                        "capsule",
+                        "syrup",
+                        "injection",
+                        "ointment",
+                        "drop",
+                        "inhaler",
+                        "patch",
+                        "suppository",
+                        "other"
+                    ]
+                }
+            }
+        },
+        "req.PrescriptionCreateReq": {
+            "type": "object",
+            "required": [
+                "doctor_id",
+                "patient_id",
+                "status"
+            ],
+            "properties": {
+                "doctor_id": {
+                    "type": "string"
+                },
+                "medications": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/req.PrescriptionMedReq"
+                    }
                 },
                 "patient_id": {
                     "type": "string"
                 },
                 "status": {
-                    "type": "string",
-                    "enum": [
-                        "not_collected",
-                        "collected"
-                    ]
+                    "type": "string"
+                }
+            }
+        },
+        "req.PrescriptionMedReq": {
+            "type": "object",
+            "required": [
+                "issued_at",
+                "medication_id",
+                "quantity"
+            ],
+            "properties": {
+                "dosage": {
+                    "type": "string"
+                },
+                "instruction": {
+                    "type": "string"
+                },
+                "issued_at": {
+                    "type": "string"
+                },
+                "medication_id": {
+                    "type": "string"
+                },
+                "quantity": {
+                    "type": "integer"
+                }
+            }
+        },
+        "res.MedicationRes": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "drug_name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "stock": {
+                    "type": "integer"
+                },
+                "unit": {
+                    "type": "string"
                 }
             }
         },

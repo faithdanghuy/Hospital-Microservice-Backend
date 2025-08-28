@@ -18,7 +18,7 @@ import (
 // @Success      200  {object}  res.PrescriptionDetailRes
 // @Failure      404  {object}  response.ResErr
 // @Security     BearerAuth
-// @Router       /prescription-service/prescriptions/{id} [get]
+// @Router       /prescription/detail/{id} [get]
 func (u *prescriptionHandlerImpl) HandlePrescriptionDetail(c echo.Context) error {
 	id := c.Param("id")
 	if id == "" {

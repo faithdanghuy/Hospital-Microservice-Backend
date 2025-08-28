@@ -11,7 +11,7 @@ type PrescMedEntity struct {
 	PrescriptionID *string   `gorm:"not null"`
 	MedicationID   *string   `gorm:"not null"`
 	Quantity       *int      `gorm:"not null"`
-	Unit           *string   `gorm:"not null"`
+	Dosage         *string   `gorm:"not null"`
 	Instruction    *string   `gorm:"type:text"`
 	IssuedAt       time.Time `gorm:"not null"`
 

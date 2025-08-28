@@ -20,7 +20,7 @@ import (
 // @Success      201   {object}  response.ResOk
 // @Failure      400   {object}  response.ResErr
 // @Security     BearerAuth
-// @Router       /prescription-service/prescriptions [post]
+// @Router       /prescription/create [post]
 func (u *prescriptionHandlerImpl) HandlePrescriptionCreate(c echo.Context) error {
 	var prescription req.PrescriptionCreateReq
 	if err := c.Bind(&prescription); err != nil {
