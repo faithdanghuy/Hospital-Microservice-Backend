@@ -58,7 +58,8 @@ func Run(confPath string) {
 		appProvider         = provider.NewAppProvider(serviceConf)
 		prescriptionRepo    = repository.NewPrescriptionRepo(appProvider.Postgres)
 		prescriptionHandler = handler.NewPrescriptionHandler(handler.PrescriptionHandlerInject{
-			PrescriptionDetailUseCase: usecase.NewPrescriptionDetailUseCase(prescriptionRepo),
+			FilterPrescriptionUseCase: usecase.NewFilterPrescriptionUseCase(prescriptionRepo),
+			PrescriptionDetailUseCase: usecase.NewGetPrescriptionUseCase(prescriptionRepo),
 			PrescriptionCreateUseCase: usecase.NewPrescriptionCreateUseCase(prescriptionRepo),
 			DeleteMedicationUseCase:   usecase.NewDeleteMedicationUseCase(prescriptionRepo),
 			CreateMedicationUseCase:   usecase.NewCreateMedicationUseCase(prescriptionRepo),

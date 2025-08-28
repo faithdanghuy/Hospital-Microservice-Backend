@@ -21,11 +21,14 @@ func Routes(handler handler.PrescriptionHandler) []route.GroupRoute {
 						middleware.JWT(),
 					},
 				},
-				// {
-				// 	Path:    "/update",
-				// 	Method:  method.PATCH,
-				// 	Handler: handler.HandleRegister,
-				// },
+				{
+					Path:    "/update",
+					Method:  method.PATCH,
+					Handler: handler.HandlePrescriptionUpdate,
+					Middlewares: []echo.MiddlewareFunc{
+						middleware.JWT(),
+					},
+				},
 				{
 					Path:    "/detail/:id",
 					Method:  method.GET,
@@ -34,16 +37,22 @@ func Routes(handler handler.PrescriptionHandler) []route.GroupRoute {
 						middleware.JWT(),
 					},
 				},
-				// {
-				// 	Path:    "/filter",
-				// 	Method:  method.GET,
-				// 	Handler: handler.HandleRegister,
-				// },
-				// {
-				// 	Path:    "/delete",
-				// 	Method:  method.DELETE,
-				// 	Handler: handler.HandleProfile,
-				// },
+				{
+					Path:    "/filter",
+					Method:  method.GET,
+					Handler: handler.HandlePrescriptionFilter,
+					Middlewares: []echo.MiddlewareFunc{
+						middleware.JWT(),
+					},
+				},
+				{
+					Path:    "/delete",
+					Method:  method.DELETE,
+					Handler: handler.HandlePrescriptionDelete,
+					Middlewares: []echo.MiddlewareFunc{
+						middleware.JWT(),
+					},
+				},
 			},
 		},
 		{

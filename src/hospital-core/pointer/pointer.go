@@ -1,5 +1,7 @@
 package pointer
 
+import "time"
+
 func String(value string) *string {
 	return &value
 }
@@ -14,6 +16,12 @@ func Float(value float64) *float64 {
 
 func Bool(value bool) *bool {
 	return &value
+}
+func Time(t *time.Time) time.Time {
+	if t != nil {
+		return *t
+	}
+	return time.Time{}
 }
 
 func SetString(source *string, value string) {

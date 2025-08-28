@@ -64,6 +64,7 @@ services:
       DB_DBNAME: prescription_service_db
       DB_SSLMODE: verify-ca
       DB_SSLROOTCERT: /app/ca.pem
+      USER_SERVICE_URL: http://user-service:3000
       JWT_SECRET_KEY: 127ccd8ecf2ac84ede74247dacb87d51498245970b8076a49052a212085c6524
   nginx:
     image: nginx:latest

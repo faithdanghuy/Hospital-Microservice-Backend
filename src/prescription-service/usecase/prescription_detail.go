@@ -7,33 +7,18 @@ import (
 	"github.com/Hospital-Microservice/prescription-service/repository"
 )
 
-type PrescriptionDetailUseCase interface {
+type GetPrescriptionUseCase interface {
 	Execute(ctx context.Context, id string) (*entity.PrescriptionEntity, error)
 }
 
-type prescriptionDetailUseCaseImpl struct {
-	prescriptionRepo repository.PrescriptionRepo
+type getPrescriptionUseCaseImpl struct {
+	repo repository.PrescriptionRepo
 }
 
-func (l *prescriptionDetailUseCaseImpl) Execute(
-	ctx context.Context,
-	id string,
-) (*entity.PrescriptionEntity, error) {
-	prescription, err := l.prescriptionRepo.FindPrescriptionByID(
-		ctx,
-		id,
-	)
-	if err != nil {
-		return nil, err
-	}
-
-	return prescription, nil
+func NewGetPrescriptionUseCase(repo repository.PrescriptionRepo) GetPrescriptionUseCase {
+	return &getPrescriptionUseCaseImpl{repo: repo}
 }
 
-func NewPrescriptionDetailUseCase(
-	PrescriptionRepo repository.PrescriptionRepo,
-) PrescriptionDetailUseCase {
-	return &prescriptionDetailUseCaseImpl{
-		prescriptionRepo: PrescriptionRepo,
-	}
+func (u *getPrescriptionUseCaseImpl) Execute(ctx context.Context, id string) (*entity.PrescriptionEntity, error) {
+	return u.repo.GetPrescription(ctx, id)
 }

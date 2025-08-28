@@ -9,6 +9,10 @@ import (
 type PrescriptionHandler interface {
 	HandlePrescriptionDetail(c echo.Context) error
 	HandlePrescriptionCreate(c echo.Context) error
+	HandlePrescriptionDelete(c echo.Context) error
+	HandlePrescriptionUpdate(c echo.Context) error
+	HandlePrescriptionFilter(c echo.Context) error
+
 	HandleCreateMedication(c echo.Context) error
 	HandleUpdateMedication(c echo.Context) error
 	HandleListMedications(c echo.Context) error
@@ -17,7 +21,10 @@ type PrescriptionHandler interface {
 }
 
 type prescriptionHandlerImpl struct {
-	prescriptionDetailUseCase usecase.PrescriptionDetailUseCase
+	prescriptionFilterUseCase usecase.FilterPrescriptionUseCase
+	prescriptionDetailUseCase usecase.GetPrescriptionUseCase
+	prescriptionDeleteUseCase usecase.DeletePrescriptionUseCase
+	prescriptionUpdateUseCase usecase.UpdatePrescriptionUseCase
 	prescriptionCreateUseCase usecase.PrescriptionCreateUseCase
 	deleteMedicationUseCase   usecase.DeleteMedicationUseCase
 	createMedicationUseCase   usecase.CreateMedicationUseCase
@@ -28,7 +35,10 @@ type prescriptionHandlerImpl struct {
 }
 
 type PrescriptionHandlerInject struct {
-	PrescriptionDetailUseCase usecase.PrescriptionDetailUseCase
+	FilterPrescriptionUseCase usecase.FilterPrescriptionUseCase
+	PrescriptionDetailUseCase usecase.GetPrescriptionUseCase
+	DeletePrescriptionUseCase usecase.DeletePrescriptionUseCase
+	UpdatePrescriptionUseCase usecase.UpdatePrescriptionUseCase
 	PrescriptionCreateUseCase usecase.PrescriptionCreateUseCase
 	DeleteMedicationUseCase   usecase.DeleteMedicationUseCase
 	CreateMedicationUseCase   usecase.CreateMedicationUseCase
@@ -40,7 +50,10 @@ type PrescriptionHandlerInject struct {
 
 func NewPrescriptionHandler(inject PrescriptionHandlerInject) PrescriptionHandler {
 	return &prescriptionHandlerImpl{
+		prescriptionFilterUseCase: inject.FilterPrescriptionUseCase,
 		prescriptionDetailUseCase: inject.PrescriptionDetailUseCase,
+		prescriptionDeleteUseCase: inject.DeletePrescriptionUseCase,
+		prescriptionUpdateUseCase: inject.UpdatePrescriptionUseCase,
 		prescriptionCreateUseCase: inject.PrescriptionCreateUseCase,
 		deleteMedicationUseCase:   inject.DeleteMedicationUseCase,
 		createMedicationUseCase:   inject.CreateMedicationUseCase,

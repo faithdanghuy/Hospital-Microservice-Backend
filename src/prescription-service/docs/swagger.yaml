@@ -1,5 +1,18 @@
 basePath: /prescription-service
 definitions:
+  provider.UserRes:
+    properties:
+      email:
+        type: string
+      full_name:
+        type: string
+      id:
+        type: string
+      phone:
+        type: string
+      role:
+        type: string
+    type: object
   req.MedicationCreateReq:
     properties:
       description:
@@ -84,6 +97,23 @@ definitions:
     - medication_id
     - quantity
     type: object
+  req.PrescriptionUpdateReq:
+    properties:
+      doctor_id:
+        type: string
+      id:
+        type: string
+      medications:
+        items:
+          $ref: '#/definitions/req.PrescriptionMedReq'
+        type: array
+      patient_id:
+        type: string
+      status:
+        type: string
+    required:
+    - id
+    type: object
   res.MedicationRes:
     properties:
       description:
@@ -97,25 +127,42 @@ definitions:
       unit:
         type: string
     type: object
-  res.PrescriptionDetailRes:
+  res.PrescriptionMedRes:
     properties:
-      appointment_id:
-        type: string
-      created_at:
-        type: string
-      doctor_id:
-        type: string
       dosage:
-        type: string
-      drug_name:
         type: string
       id:
         type: string
       instruction:
         type: string
+      issued_at:
+        type: string
+      medication_id:
+        type: string
+      quantity:
+        type: integer
+    type: object
+  res.PrescriptionRes:
+    properties:
+      created_at:
+        type: string
+      doctor:
+        $ref: '#/definitions/provider.UserRes'
+      doctor_id:
+        type: string
+      id:
+        type: string
+      medications:
+        items:
+          $ref: '#/definitions/res.PrescriptionMedRes'
+        type: array
+      patient:
+        $ref: '#/definitions/provider.UserRes'
       patient_id:
         type: string
       status:
+        type: string
+      updated_at:
         type: string
     type: object
   response.ResErr:
@@ -346,11 +393,11 @@ paths:
       summary: Create prescription
       tags:
       - prescription
-  /prescription/detail/{id}:
-    get:
+  /prescription/delete/{id}:
+    delete:
       consumes:
       - application/json
-      description: Retrieve details of a prescription by ID
+      description: Delete a prescription record
       parameters:
       - description: Prescription ID
         in: path
@@ -363,14 +410,137 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/res.PrescriptionDetailRes'
-        "404":
-          description: Not Found
+            $ref: '#/definitions/response.ResOk'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ResErr'
+        "500":
+          description: Internal Server Error
           schema:
             $ref: '#/definitions/response.ResErr'
       security:
       - BearerAuth: []
-      summary: Get prescription details
+      summary: Delete Prescription
+      tags:
+      - prescription
+  /prescription/detail/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get a prescription detail record
+      parameters:
+      - description: Prescription ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.PrescriptionRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ResErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ResErr'
+      security:
+      - BearerAuth: []
+      summary: Get Prescription Detail
+      tags:
+      - prescription
+  /prescription/filter:
+    get:
+      consumes:
+      - application/json
+      description: Filter all prescriptions records with pagination & filters
+      parameters:
+      - description: Limit per page
+        in: query
+        name: limit
+        type: integer
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Sort (e.g. id asc)
+        in: query
+        name: sort
+        type: string
+      - description: Filter by patient ID
+        in: query
+        name: patient_id
+        type: string
+      - description: Filter by doctor ID
+        in: query
+        name: doctor_id
+        type: string
+      - description: Filter by status
+        in: query
+        name: status
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ResErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ResErr'
+      security:
+      - BearerAuth: []
+      summary: Filter Prescriptions with pagination & filters
+      tags:
+      - prescription
+  /prescription/update/{id}:
+    patch:
+      consumes:
+      - application/json
+      description: Update a prescription record
+      parameters:
+      - description: Prescription ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Prescription Update Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/req.PrescriptionUpdateReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ResOk'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ResErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ResErr'
+      security:
+      - BearerAuth: []
+      summary: Update Prescription
       tags:
       - prescription
 securityDefinitions:
