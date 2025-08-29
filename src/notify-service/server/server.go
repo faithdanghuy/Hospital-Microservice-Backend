@@ -1,8 +1,8 @@
 package server
 
 import (
+	"context"
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/Hospital-Microservice/hospital-core/config"
@@ -12,11 +12,13 @@ import (
 	"github.com/Hospital-Microservice/notify-service/handler"
 	"github.com/Hospital-Microservice/notify-service/model"
 	"github.com/Hospital-Microservice/notify-service/provider"
+	"github.com/Hospital-Microservice/notify-service/repository"
 	"github.com/Hospital-Microservice/notify-service/usecase"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/spf13/viper"
-	"github.com/streadway/amqp"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 
 	echoSwagger "github.com/swaggo/echo-swagger"
 )
@@ -47,13 +49,26 @@ func NewServer(serviceConf model.ServiceConfig, routes []coreRoute.GroupRoute) *
 func Run(confPath string) {
 	var serviceConf model.ServiceConfig
 	config.MustLoadConfig(confPath, &serviceConf)
-	viper.AutomaticEnv()
-	// envs & defaults
-	_, err := amqp.Dial("amqp://guest:guest@rabbitmq:5672/")
-	if err != nil {
-		log.Fatalf("RabbitMQ connect error: %v", err)
+
+	mongoURI := viper.GetString("MONGO_URI")
+	if mongoURI == "" {
+		mongoURI = "mongodb+srv://hihuunguyen_db_user:neejQhziYbPaERmZ@notifyservice.pdptqkh.mongodb.net/?retryWrites=true&w=majority&appName=NotifyService"
 	}
 
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI(mongoURI))
+	if err != nil {
+		panic(err)
+	}
+	// ping
+	if err := client.Ping(ctx, nil); err != nil {
+		panic(err)
+	}
+	db := client.Database("NotifyService")
+	coll := db.Collection("notifications")
+
+	// providers
 	rabbitURL := viper.GetString("RABBITMQ_URL")
 	if rabbitURL == "" {
 		rabbitURL = "amqp://guest:guest@rabbitmq:5672/"
@@ -64,18 +79,16 @@ func Run(confPath string) {
 	smtpPass := viper.GetString("SMTP_PASS")
 	smsProviderURL := viper.GetString("SMS_PROVIDER_URL")
 
-	// providers
 	rabbitSub := provider.NewRabbitSubscriber(rabbitURL, 5*time.Second)
 	emailClient := provider.NewSMTPEmailClient(smtpHost, smtpPort, smtpUser, smtpPass, 10*time.Second)
 	smsClient := provider.NewHTTPSmsClient(smsProviderURL, 10*time.Second)
 
-	// usecase + handler
-	notifyUC := usecase.NewNotifyUseCase(emailClient, smsClient)
+	notifRepo := repository.NewMongoNotificationRepo(coll)
+	notifyUC := usecase.NewNotifyUseCase(emailClient, smsClient, notifRepo)
 	notifyHandler := handler.NewNotifyHandler(handler.Inject{
 		NotifyUC: notifyUC,
 	})
 
-	// build routes and server
 	routes := Routes(notifyHandler)
 	server := NewServer(serviceConf, routes)
 
@@ -90,7 +103,6 @@ func Run(confPath string) {
 		AllowCredentials: true,
 	}))
 
-	// start RabbitMQ consumer
 	go func() {
 		if err := rabbitSub.StartConsume(func(queue string, body []byte) error {
 			return notifyUC.HandleEvent(queue, body)

@@ -45,6 +45,58 @@ info:
   title: Hospital Microservice API
   version: "1.0"
 paths:
+  /notify/mark-read/{id}:
+    post:
+      parameters:
+      - description: Notification ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ResOk'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ResErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ResErr'
+      summary: Mark a notification as read
+      tags:
+      - notify
+  /notify/notification:
+    get:
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ResOk'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ResErr'
+      summary: Get notifications for a user
+      tags:
+      - notify
   /notify/send:
     post:
       parameters:
@@ -64,6 +116,8 @@ paths:
           schema:
             $ref: '#/definitions/response.ResErr'
       summary: Send notification (email/sms)
+      tags:
+      - notify
 securityDefinitions:
   BearerAuth:
     description: Type "Bearer {your-token}"

@@ -8,13 +8,12 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-// Routes returns group routes for notify service.
 func Routes(h handler.NotifyHandler) []coreRoute.GroupRoute {
 	return []coreRoute.GroupRoute{
 		{
 			Prefix: "/notify",
 			Middlewares: []echo.MiddlewareFunc{
-				middleware.JWT(), // optional, remove if you want public endpoint
+				middleware.JWT(),
 			},
 			Routes: []coreRoute.Route{
 				{
@@ -26,6 +25,16 @@ func Routes(h handler.NotifyHandler) []coreRoute.GroupRoute {
 					Path:    "/health",
 					Method:  method.GET,
 					Handler: h.HandleHealth,
+				},
+				{
+					Path:    "/notification",
+					Method:  method.GET,
+					Handler: h.HandleListByUser,
+				},
+				{
+					Path:    "/:id/read",
+					Method:  method.PATCH,
+					Handler: h.HandleMarkRead,
 				},
 			},
 		},

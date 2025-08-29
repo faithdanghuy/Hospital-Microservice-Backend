@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/Hospital-Microservice/hospital-core/config"
+	rabbit "github.com/Hospital-Microservice/hospital-core/provider"
 	. "github.com/Hospital-Microservice/hospital-core/transport/http"
 	"github.com/Hospital-Microservice/hospital-core/transport/http/engine"
 	"github.com/Hospital-Microservice/hospital-core/transport/http/route"
@@ -53,6 +54,15 @@ func Run(confPath string) {
 	if userServiceURL == "" {
 		userServiceURL = "http://user-service:3000"
 	}
+
+	rabbitPublisher, err := rabbit.NewRabbitPublisher(
+		"amqp://guest:guest@rabbitmq:5672/",
+		5*time.Second,
+	)
+	if err != nil {
+		panic("failed to connect rabbitmq: " + err.Error())
+	}
+	defer rabbitPublisher.Close()
 	userClient := provider.NewHttpUserService(userServiceURL, 5*time.Second)
 	var (
 		appProvider         = provider.NewAppProvider(serviceConf)
@@ -60,7 +70,7 @@ func Run(confPath string) {
 		prescriptionHandler = handler.NewPrescriptionHandler(handler.PrescriptionHandlerInject{
 			FilterPrescriptionUseCase: usecase.NewFilterPrescriptionUseCase(prescriptionRepo),
 			PrescriptionDetailUseCase: usecase.NewGetPrescriptionUseCase(prescriptionRepo),
-			PrescriptionCreateUseCase: usecase.NewPrescriptionCreateUseCase(prescriptionRepo),
+			PrescriptionCreateUseCase: usecase.NewPrescriptionCreateUseCase(prescriptionRepo, rabbitPublisher, userClient),
 			UpdatePrescriptionUseCase: usecase.NewUpdatePrescriptionUseCase(prescriptionRepo),
 			DeletePrescriptionUseCase: usecase.NewDeletePrescriptionUseCase(prescriptionRepo),
 			DeleteMedicationUseCase:   usecase.NewDeleteMedicationUseCase(prescriptionRepo),

@@ -1,4 +1,18 @@
 services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672" 
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   user-service:
     build: 
       context: .
@@ -19,6 +33,7 @@ services:
       DB_DBNAME: user_service_db
       DB_SSLMODE: verify-ca
       DB_SSLROOTCERT: /app/ca.pem
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672/
       JWT_SECRET_KEY: 127ccd8ecf2ac84ede74247dacb87d51498245970b8076a49052a212085c6524
 
   appointment-service:
@@ -69,6 +84,7 @@ services:
       DB_SSLMODE: verify-ca
       DB_SSLROOTCERT: /app/ca.pem
       USER_SERVICE_URL: http://user-service:3000
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672/
       JWT_SECRET_KEY: 127ccd8ecf2ac84ede74247dacb87d51498245970b8076a49052a212085c6524
   report-service:
     build:
@@ -101,7 +117,6 @@ services:
     container_name: notify-service
     volumes:
       - ./notify-service/deploy/local_conf.env:/Hospital-Microservice/src/notify-service/deploy/local_conf.env
-      - ./notify-service/deploy/ca.pem:/app/ca.pem
     ports:
       - "3004:3004"
     depends_on:
@@ -112,13 +127,7 @@ services:
     environment:
       SERVICE_NAME: notify-service
       SERVICE_PORT: 3004
-      DB_HOST: updt-hcmus-hcmus-udpt.c.aivencloud.com
-      DB_PORT: 28333
-      DB_USER: avnadmin
-      DB_PWD: AVNS_VW_PgBpYHhVYKtrPwwa
-      DB_DBNAME: notify_service_db
-      DB_SSLMODE: verify-ca
-      DB_SSLROOTCERT: /app/ca.pem
+      MONGO_URI: mongodb+srv://hihuunguyen_db_user:neejQhziYbPaERmZ@notifyservice.pdptqkh.mongodb.net/?retryWrites=true&w=majority&appName=NotifyService
       USER_SERVICE_URL: http://user-service:3000
       APPOINTMENT_SERVICE_URL: http://appointment-service:3001
       PRESCRIPTION_SERVICE_URL: http://prescription-service:3002
@@ -129,22 +138,6 @@ services:
       SMTP_USER: ""
       SMTP_PASS: ""
       JWT_SECRET_KEY: 127ccd8ecf2ac84ede74247dacb87d51498245970b8076a49052a212085c6524
-
-    
-  rabbitmq:
-    image: rabbitmq:3-management
-    container_name: rabbitmq
-    ports:
-      - "5672:5672"
-      - "15672:15672" 
-    environment:
-      - RABBITMQ_DEFAULT_USER=guest
-      - RABBITMQ_DEFAULT_PASS=guest
-    healthcheck:
-      test: ["CMD", "rabbitmq-diagnostics", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
   nginx:
     image: nginx:latest

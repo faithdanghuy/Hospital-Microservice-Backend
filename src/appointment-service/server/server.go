@@ -68,7 +68,7 @@ func Run(confPath string) {
 		appointmentRepo    = repository.NewAppointmentRepo(appProvider.Postgres)
 		appointmentHandler = handler.NewAppointmentHandler(handler.AppointmentHandlerInject{
 			AppointmentDetailUseCase:       usecase.NewAppointmentDetailUseCase(appointmentRepo),
-			AppointmentCreateUseCase:       usecase.NewAppointmentCreateUseCase(appointmentRepo, rabbitPublisher),
+			AppointmentCreateUseCase:       usecase.NewAppointmentCreateUseCase(appointmentRepo, rabbitPublisher, userClient),
 			AppointmentChangeStatusUseCase: usecase.NewAppointmentChangeStatusUseCase(appointmentRepo),
 			AppointmentFilterUseCase:       usecase.NewAppointmentFilterUseCase(appointmentRepo),
 			AppointmentEditUseCase:         usecase.NewAppointmentEditUseCase(appointmentRepo),

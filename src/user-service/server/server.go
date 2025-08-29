@@ -1,7 +1,10 @@
 package server
 
 import (
+	"time"
+
 	"github.com/Hospital-Microservice/hospital-core/config"
+	rabbit "github.com/Hospital-Microservice/hospital-core/provider"
 	. "github.com/Hospital-Microservice/hospital-core/transport/http"
 	"github.com/Hospital-Microservice/hospital-core/transport/http/engine"
 	"github.com/Hospital-Microservice/hospital-core/transport/http/route"
@@ -46,12 +49,20 @@ func Run(confPath string) {
 	var serviceConf model.ServiceConfig
 	config.MustLoadConfig(confPath, &serviceConf)
 
+	rabbitPublisher, err := rabbit.NewRabbitPublisher(
+		"amqp://guest:guest@rabbitmq:5672/",
+		5*time.Second,
+	)
+	if err != nil {
+		panic("failed to connect rabbitmq: " + err.Error())
+	}
+	defer rabbitPublisher.Close()
 	var (
 		appProvider = provider.NewAppProvider(serviceConf)
 		userRepo    = repository.NewUserRepo(appProvider.Postgres)
 		userHandler = handler.NewUserHandler(handler.UserHandlerInject{
 			LoginUseCase:       usecase.NewLoginUseCase(appProvider, userRepo),
-			RegisterUseCase:    usecase.NewRegisterUseCase(userRepo),
+			RegisterUseCase:    usecase.NewRegisterUseCase(userRepo, rabbitPublisher),
 			ProfileUseCase:     usecase.NewProfileUseCase(userRepo),
 			UpdateUseCase:      usecase.NewUpdateUseCase(userRepo),
 			ChangePwdUseCase:   usecase.NewChangePasswordUseCase(userRepo),

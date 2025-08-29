@@ -17,8 +17,10 @@ RUN go build -o main ./cmd/app
 FROM debian:bookworm-slim
 
 WORKDIR /app
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+    
 COPY --from=builder /app/notify-service/main .
-COPY notify-service/deploy/ca.pem ./ca.pem
 
-EXPOSE 3002
+EXPOSE 3004
 CMD ["./main"]
