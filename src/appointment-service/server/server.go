@@ -10,6 +10,7 @@ import (
 	"github.com/Hospital-Microservice/appointment-service/repository"
 	"github.com/Hospital-Microservice/appointment-service/usecase"
 	"github.com/Hospital-Microservice/hospital-core/config"
+	rabbit "github.com/Hospital-Microservice/hospital-core/provider"
 	. "github.com/Hospital-Microservice/hospital-core/transport/http"
 	"github.com/Hospital-Microservice/hospital-core/transport/http/engine"
 	"github.com/Hospital-Microservice/hospital-core/transport/http/route"
@@ -53,12 +54,21 @@ func Run(confPath string) {
 		userServiceURL = "http://user-service:3000"
 	}
 	userClient := provider.NewHttpUserService(userServiceURL, 5*time.Second)
+
+	rabbitPublisher, err := rabbit.NewRabbitPublisher(
+		"amqp://guest:guest@rabbitmq:5672/",
+		5*time.Second,
+	)
+	if err != nil {
+		panic("failed to connect rabbitmq: " + err.Error())
+	}
+	defer rabbitPublisher.Close()
 	var (
 		appProvider        = provider.NewAppProvider(serviceConf)
 		appointmentRepo    = repository.NewAppointmentRepo(appProvider.Postgres)
 		appointmentHandler = handler.NewAppointmentHandler(handler.AppointmentHandlerInject{
 			AppointmentDetailUseCase:       usecase.NewAppointmentDetailUseCase(appointmentRepo),
-			AppointmentCreateUseCase:       usecase.NewAppointmentCreateUseCase(appointmentRepo),
+			AppointmentCreateUseCase:       usecase.NewAppointmentCreateUseCase(appointmentRepo, rabbitPublisher),
 			AppointmentChangeStatusUseCase: usecase.NewAppointmentChangeStatusUseCase(appointmentRepo),
 			AppointmentFilterUseCase:       usecase.NewAppointmentFilterUseCase(appointmentRepo),
 			AppointmentEditUseCase:         usecase.NewAppointmentEditUseCase(appointmentRepo),

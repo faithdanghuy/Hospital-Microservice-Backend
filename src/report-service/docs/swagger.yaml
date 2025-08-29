@@ -1,0 +1,129 @@
+basePath: /report-service
+definitions:
+  response.ResErr:
+    properties:
+      errors:
+        items:
+          type: string
+        type: array
+      message:
+        type: string
+      status:
+        type: string
+    type: object
+  usecase.ChartData:
+    properties:
+      labels:
+        items:
+          type: string
+        type: array
+      values:
+        items:
+          type: integer
+        type: array
+    type: object
+host: localhost:3080
+info:
+  contact: {}
+  description: API documentation for Hospital Microservice
+  title: Hospital Microservice API
+  version: "1.0"
+paths:
+  /report/appointments:
+    get:
+      parameters:
+      - description: Doctor ID
+        in: query
+        name: doctor_id
+        type: string
+      - description: Month (1-12)
+        in: query
+        name: month
+        required: true
+        type: integer
+      - description: Year
+        in: query
+        name: year
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/usecase.ChartData'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ResErr'
+      security:
+      - BearerAuth: []
+      summary: Appointments per day for doctor/month
+      tags:
+      - report
+  /report/patients:
+    get:
+      parameters:
+      - description: Month (1-12)
+        in: query
+        name: month
+        required: true
+        type: integer
+      - description: Year
+        in: query
+        name: year
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/usecase.ChartData'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ResErr'
+      security:
+      - BearerAuth: []
+      summary: Patients per day in month
+      tags:
+      - report
+  /report/prescriptions:
+    get:
+      parameters:
+      - description: Month (1-12)
+        in: query
+        name: month
+        required: true
+        type: integer
+      - description: Year
+        in: query
+        name: year
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/usecase.ChartData'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ResErr'
+      security:
+      - BearerAuth: []
+      summary: Prescriptions per day in month
+      tags:
+      - report
+securityDefinitions:
+  BearerAuth:
+    description: Type "Bearer {your-token}"
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

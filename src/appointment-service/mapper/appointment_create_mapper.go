@@ -11,13 +11,19 @@ import (
 )
 
 func TransformAppointmentCreateReqToEntity(req req.AppointmentCreateReq) *entity.AppointmentEntity {
+	var scheduledAt time.Time
+	if req.ScheduledAt != "" {
+		if t, err := time.Parse(time.RFC3339, req.ScheduledAt); err == nil {
+			scheduledAt = t
+		}
+	}
 	return &entity.AppointmentEntity{
 		BaseEntity: record.BaseEntity{
 			ID: pointer.String(uuid.New().String()),
 		},
 		PatientID:   pointer.String(req.PatientID),
 		DoctorID:    pointer.String(req.DoctorID),
-		ScheduledAt: time.Now(),
+		ScheduledAt: scheduledAt,
 		Note:        pointer.String(req.Note),
 		ConfirmedAt: nil,
 	}

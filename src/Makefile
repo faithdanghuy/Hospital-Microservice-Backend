@@ -1,23 +1,18 @@
-SHELL := /bin/bash
-
-export GOROOT := /c/Program Files/Go
-export GOPATH := /c/Users/Nguyen Hi Huu/go
-export GOMODCACHE := $(GOPATH)/pkg/mod
-export GOCACHE:= /c/Users/Nguyen Hi Huu/AppData/Local/go-build
-export GOBIN := $(GOPATH)/bin
-export PATH := $(GOROOT)/bin:$(GOBIN):$(PATH)
-export TEMP := /c/Users/Nguyen Hi Huu/AppData/Local/Temp
-export TMP := /c/Users/Nguyen Hi Huu/AppData/Local/Temp
-
 all:
-	go run user-service/cmd/app/main.go &
-	go run appointment-service/cmd/app/main.go &
-	go run prescription-service/cmd/app/main.go &
-	wait
+	docker-compose up --build
 
 user:
-	go run user-service/cmd/app/main.go
+	docker compose build user-service
+	docker compose up -d user-service
 appointment:
-	go run appointment-service/cmd/app/main.go
+	docker compose build appointment-service
+	docker compose up -d appointment-service 
 prescription:
-	go run prescription-service/cmd/app/main.go
+	docker compose build prescription-service
+	docker compose up -d prescription-service
+report:
+	docker compose build report-service
+	docker compose up -d report-service
+notify:
+	docker compose build notify-service
+	docker compose up -d notify-service

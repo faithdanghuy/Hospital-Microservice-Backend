@@ -1,0 +1,73 @@
+basePath: /notify-service
+definitions:
+  req.NotificationReq:
+    properties:
+      body:
+        type: string
+      meta:
+        additionalProperties:
+          type: string
+        type: object
+      subject:
+        type: string
+      to_emails:
+        items:
+          type: string
+        type: array
+      to_phones:
+        items:
+          type: string
+        type: array
+    type: object
+  response.ResErr:
+    properties:
+      errors:
+        items:
+          type: string
+        type: array
+      message:
+        type: string
+      status:
+        type: string
+    type: object
+  response.ResOk:
+    properties:
+      data: {}
+      message:
+        type: string
+      status:
+        type: string
+    type: object
+host: localhost:3080
+info:
+  contact: {}
+  description: API documentation for Hospital Microservice
+  title: Hospital Microservice API
+  version: "1.0"
+paths:
+  /notify/send:
+    post:
+      parameters:
+      - description: Notification
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/req.NotificationReq'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ResOk'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ResErr'
+      summary: Send notification (email/sms)
+securityDefinitions:
+  BearerAuth:
+    description: Type "Bearer {your-token}"
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

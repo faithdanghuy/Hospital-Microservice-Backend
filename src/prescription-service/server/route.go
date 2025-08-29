@@ -22,7 +22,7 @@ func Routes(handler handler.PrescriptionHandler) []route.GroupRoute {
 					},
 				},
 				{
-					Path:    "/update",
+					Path:    "/update/:id",
 					Method:  method.PATCH,
 					Handler: handler.HandlePrescriptionUpdate,
 					Middlewares: []echo.MiddlewareFunc{
@@ -46,7 +46,7 @@ func Routes(handler handler.PrescriptionHandler) []route.GroupRoute {
 					},
 				},
 				{
-					Path:    "/delete",
+					Path:    "/delete/:id",
 					Method:  method.DELETE,
 					Handler: handler.HandlePrescriptionDelete,
 					Middlewares: []echo.MiddlewareFunc{
@@ -67,7 +67,7 @@ func Routes(handler handler.PrescriptionHandler) []route.GroupRoute {
 					Handler: handler.HandleCreateMedication,
 				},
 				{
-					Path:    "/update",
+					Path:    "/update/:id",
 					Method:  method.PATCH,
 					Handler: handler.HandleUpdateMedication,
 				},
@@ -80,6 +80,11 @@ func Routes(handler handler.PrescriptionHandler) []route.GroupRoute {
 					Path:    "/detail/:id",
 					Method:  method.GET,
 					Handler: handler.HandleDetailMedication,
+				},
+				{
+					Path:    "/delete/:id",
+					Method:  method.DELETE,
+					Handler: handler.HandleDeleteMedication,
 				},
 			},
 		},

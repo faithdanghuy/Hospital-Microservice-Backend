@@ -61,6 +61,8 @@ func Run(confPath string) {
 			FilterPrescriptionUseCase: usecase.NewFilterPrescriptionUseCase(prescriptionRepo),
 			PrescriptionDetailUseCase: usecase.NewGetPrescriptionUseCase(prescriptionRepo),
 			PrescriptionCreateUseCase: usecase.NewPrescriptionCreateUseCase(prescriptionRepo),
+			UpdatePrescriptionUseCase: usecase.NewUpdatePrescriptionUseCase(prescriptionRepo),
+			DeletePrescriptionUseCase: usecase.NewDeletePrescriptionUseCase(prescriptionRepo),
 			DeleteMedicationUseCase:   usecase.NewDeleteMedicationUseCase(prescriptionRepo),
 			CreateMedicationUseCase:   usecase.NewCreateMedicationUseCase(prescriptionRepo),
 			UpdateMedicationUseCase:   usecase.NewUpdateMedicationUseCase(prescriptionRepo),

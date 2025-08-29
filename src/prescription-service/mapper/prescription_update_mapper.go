@@ -1,6 +1,8 @@
 package mapper
 
 import (
+	"time"
+
 	"github.com/Hospital-Microservice/hospital-core/pointer"
 	"github.com/Hospital-Microservice/hospital-core/record"
 	"github.com/Hospital-Microservice/prescription-service/entity"
@@ -25,7 +27,7 @@ func TransformPrescriptionUpdateReqToEntity(req req.PrescriptionUpdateReq) *enti
 			Quantity:     m.Quantity,
 			Dosage:       m.Dosage,
 			Instruction:  m.Instruction,
-			IssuedAt:     m.IssuedAt,
+			IssuedAt:     time.Now(),
 		})
 	}
 	p.Medications = meds

@@ -31,6 +31,9 @@ services:
       - ./appointment-service/deploy/ca.pem:/app/ca.pem
     ports:
       - "3001:3001"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
     environment:
       SERVICE_NAME: appointment-service
       SERVICE_PORT: 3001
@@ -42,6 +45,7 @@ services:
       DB_SSLMODE: verify-ca
       DB_SSLROOTCERT: /app/ca.pem
       USER_SERVICE_URL: http://user-service:3000
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672/
       JWT_SECRET_KEY: 127ccd8ecf2ac84ede74247dacb87d51498245970b8076a49052a212085c6524
 
   prescription-service:
@@ -66,6 +70,82 @@ services:
       DB_SSLROOTCERT: /app/ca.pem
       USER_SERVICE_URL: http://user-service:3000
       JWT_SECRET_KEY: 127ccd8ecf2ac84ede74247dacb87d51498245970b8076a49052a212085c6524
+  report-service:
+    build:
+      context: .
+      dockerfile: report-service/Dockerfile
+    container_name: report-service
+    volumes:
+      - ./report-service/deploy/local_conf.env:/Hospital-Microservice/src/report-service/deploy/local_conf.env
+      - ./report-service/deploy/ca.pem:/app/ca.pem
+    ports:
+      - "3003:3003"
+    environment:
+      SERVICE_NAME: report-service
+      SERVICE_PORT: 3003
+      DB_HOST: updt-hcmus-hcmus-udpt.c.aivencloud.com
+      DB_PORT: 28333
+      DB_USER: avnadmin
+      DB_PWD: AVNS_VW_PgBpYHhVYKtrPwwa
+      DB_DBNAME: report_service_db
+      DB_SSLMODE: verify-ca
+      DB_SSLROOTCERT: /app/ca.pem
+      USER_SERVICE_URL: http://user-service:3000
+      APPOINTMENT_SERVICE_URL: http://appointment-service:3001
+      PRESCRIPTION_SERVICE_URL: http://prescription-service:3002
+      JWT_SECRET_KEY: 127ccd8ecf2ac84ede74247dacb87d51498245970b8076a49052a212085c6524
+  notify-service:
+    build:
+      context: .
+      dockerfile: notify-service/Dockerfile
+    container_name: notify-service
+    volumes:
+      - ./notify-service/deploy/local_conf.env:/Hospital-Microservice/src/notify-service/deploy/local_conf.env
+      - ./notify-service/deploy/ca.pem:/app/ca.pem
+    ports:
+      - "3004:3004"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      mailhog:
+        condition: service_healthy
+    environment:
+      SERVICE_NAME: notify-service
+      SERVICE_PORT: 3004
+      DB_HOST: updt-hcmus-hcmus-udpt.c.aivencloud.com
+      DB_PORT: 28333
+      DB_USER: avnadmin
+      DB_PWD: AVNS_VW_PgBpYHhVYKtrPwwa
+      DB_DBNAME: notify_service_db
+      DB_SSLMODE: verify-ca
+      DB_SSLROOTCERT: /app/ca.pem
+      USER_SERVICE_URL: http://user-service:3000
+      APPOINTMENT_SERVICE_URL: http://appointment-service:3001
+      PRESCRIPTION_SERVICE_URL: http://prescription-service:3002
+      REPORT_SERVICE_URL: http://report-service:3003
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672/
+      SMTP_HOST: mailhog
+      SMTP_PORT: 1025
+      SMTP_USER: ""
+      SMTP_PASS: ""
+      JWT_SECRET_KEY: 127ccd8ecf2ac84ede74247dacb87d51498245970b8076a49052a212085c6524
+
+    
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672" 
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   nginx:
     image: nginx:latest
     container_name: nginx
@@ -77,6 +157,21 @@ services:
       - user-service
       - appointment-service
       - prescription-service
+      - report-service
+      - notify-service
+
+  mailhog:
+    image: mailhog/mailhog
+    container_name: mailhog
+    ports:
+      - "8025:8025"  
+      - "1025:1025"  
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "1025"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
 
 networks:
   default:
