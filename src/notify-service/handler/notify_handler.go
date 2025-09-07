@@ -114,8 +114,6 @@ func (h *notifyHandlerImpl) HandleListByUser(c echo.Context) error {
 func (h *notifyHandlerImpl) HandleMarkRead(c echo.Context) error {
 	id := c.Param("id")
 
-	// Prefer usecase method that enforces ownership: MarkAsReadByUser(ctx, id, userID)
-	// If your usecase doesn't have it yet, add it (see notes below).
 	if err := h.notif.MarkAsRead(c.Request().Context(), id); err != nil {
 		return response.Error(c, http.StatusInternalServerError, err.Error())
 	}

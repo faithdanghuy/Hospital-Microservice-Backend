@@ -59,14 +59,23 @@ func (r *prescriptionCreateUseCaseImpl) Execute(ctx context.Context, prescriptio
 		}
 	}
 
-	if len(emails) > 0 {
+	if len(emails) > 0 || len(ids) > 0 {
+		idsBytes, _ := json.Marshal(ids)
+
 		notify := req.NotificationReq{
 			ToEmails: emails,
-			Subject:  "Medication Prescribed",
-			Body:     "Your medication has been prescribed successfully.",
+			Subject:  "Prescription Scheduled Successfully",
+			Body:     "Your prescription has been scheduled successfully.",
+			Meta: map[string]any{
+				"user_ids": string(idsBytes),
+			},
 		}
-		body, _ := json.Marshal(notify)
-		if err := r.publisher.Publish(ctx, body); err != nil {
+
+		log.Error("failed to publish notify message", zap.Error(err))
+		body, err := json.Marshal(notify)
+		if err != nil {
+			log.Error("failed to marshal notify message", zap.Error(err))
+		} else if err := r.publisher.Publish(ctx, body); err != nil {
 			log.Error("failed to publish notify message", zap.Error(err))
 		}
 	}

@@ -53,7 +53,6 @@ func (r appointmentCreateUseCaseImpl) Execute(ctx context.Context, appointment *
 	}
 
 	if len(emails) > 0 || len(ids) > 0 {
-		// Convert user IDs slice to JSON string for NotifyService
 		idsBytes, _ := json.Marshal(ids)
 
 		notify := req.NotificationReq{
@@ -61,7 +60,7 @@ func (r appointmentCreateUseCaseImpl) Execute(ctx context.Context, appointment *
 			Subject:  "Appointment Created",
 			Body:     "Your appointment has been scheduled successfully.",
 			Meta: map[string]any{
-				"user_ids": string(idsBytes), // <-- fix here
+				"user_ids": string(idsBytes),
 			},
 		}
 		body, err := json.Marshal(notify)

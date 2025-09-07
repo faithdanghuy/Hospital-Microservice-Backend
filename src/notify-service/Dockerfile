@@ -17,7 +17,7 @@ RUN go build -o main ./cmd/app
 FROM debian:bookworm-slim
 
 WORKDIR /app
-RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates && \
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates dnsutils && \
     rm -rf /var/lib/apt/lists/*
     
 COPY --from=builder /app/notify-service/main .

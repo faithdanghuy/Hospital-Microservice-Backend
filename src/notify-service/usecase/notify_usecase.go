@@ -107,7 +107,6 @@ func (u *notifyUseCase) HandleEvent(queue string, body []byte) error {
 		if err2 := json.Unmarshal(body, &rawMap); err2 != nil {
 			return fmt.Errorf("invalid event payload: %w", err)
 		}
-		// fallback mapping
 		if b, ok := rawMap["body"].(string); ok {
 			r.Body = b
 		}
@@ -128,14 +127,12 @@ func (u *notifyUseCase) HandleEvent(queue string, body []byte) error {
 				}
 			}
 		}
-		// capture meta if present
 		if m, ok := rawMap["meta"].(map[string]interface{}); ok {
 			r.Meta = make(map[string]string)
 			for k, v := range m {
 				if s, ok := v.(string); ok {
 					r.Meta[k] = s
 				} else {
-					// try marshal value
 					b, _ := json.Marshal(v)
 					r.Meta[k] = string(b)
 				}
@@ -143,7 +140,6 @@ func (u *notifyUseCase) HandleEvent(queue string, body []byte) error {
 		}
 	}
 
-	// persist notifications per user if meta contains user_id(s)
 	if r.Meta != nil {
 		// single user
 		if uid, ok := r.Meta["user_id"]; ok && uid != "" {
@@ -158,12 +154,9 @@ func (u *notifyUseCase) HandleEvent(queue string, body []byte) error {
 			}
 			_ = u.repo.Save(context.Background(), n)
 		}
-		// user_ids as JSON array string or comma-separated
 		if raw, ok := r.Meta["user_ids"]; ok && raw != "" {
 			var ids []string
-			// try parse JSON array
 			if err := json.Unmarshal([]byte(raw), &ids); err != nil {
-				// fallback split by comma
 				for _, part := range splitAndTrim(raw) {
 					ids = append(ids, part)
 				}
@@ -183,7 +176,6 @@ func (u *notifyUseCase) HandleEvent(queue string, body []byte) error {
 		}
 	}
 
-	// continue to send
 	return u.Send(context.Background(), r)
 }
 
