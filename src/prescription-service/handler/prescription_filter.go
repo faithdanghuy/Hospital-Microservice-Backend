@@ -3,6 +3,7 @@ package handler
 import (
 	"net/http"
 
+	token "github.com/Hospital-Microservice/hospital-core/model"
 	"github.com/Hospital-Microservice/hospital-core/record"
 	"github.com/Hospital-Microservice/hospital-core/transport/http/response"
 	"github.com/Hospital-Microservice/prescription-service/entity"
@@ -31,6 +32,16 @@ import (
 // @Failure      500  {object}  response.ResErr
 // @Router       /prescription/filter [get]
 func (h *prescriptionHandlerImpl) HandlePrescriptionFilter(c echo.Context) error {
+	user := c.Get("user")
+	if user == nil {
+		return response.Error(c, http.StatusUnauthorized, "Unauthorized")
+	}
+
+	claims, ok := user.(token.JwtCustomClaims)
+	if !ok {
+		return response.Error(c, http.StatusUnauthorized, "Invalid token")
+	}
+
 	p := new(record.Pagination)
 	if err := c.Bind(p); err != nil {
 		return response.Error(c, http.StatusBadRequest, err.Error())
@@ -38,6 +49,16 @@ func (h *prescriptionHandlerImpl) HandlePrescriptionFilter(c echo.Context) error
 	filter := new(req.PrescriptionFilterReq)
 	if err := c.Bind(filter); err != nil {
 		return response.Error(c, http.StatusBadRequest, err.Error())
+	}
+	switch claims.AccountType {
+	case "patient":
+		filter.PatientID = claims.ID
+
+	case "doctor":
+		filter.DoctorID = claims.ID
+	case "admin":
+	default:
+		return response.Error(c, http.StatusForbidden, "Unauthorized Role")
 	}
 
 	result, err := h.prescriptionFilterUseCase.Execute(c.Request().Context(), p, filter)

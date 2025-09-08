@@ -23,6 +23,8 @@ func (r *mongoNotificationRepo) Save(ctx context.Context, n *entity.Notification
 	if n.ID.IsZero() {
 		n.ID = primitive.NewObjectID()
 	}
+	n.IsRead = false
+	n.CreatedAt = time.Now().UTC()
 	_, err := r.col.InsertOne(ctx, n)
 
 	return err

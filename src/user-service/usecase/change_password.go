@@ -36,7 +36,7 @@ func (u changePasswordUseCaseImpl) Execute(ctx context.Context, userID, oldPwd, 
 		return err
 	}
 
-	if err := u.userRepo.ChangePassword(ctx, userID, hashPwd); err != nil {
+	if err := u.userRepo.ChangePassword(context.Background(), userID, hashPwd); err != nil {
 		log.Error("failed to change password", zap.Error(err))
 		return err
 	}
